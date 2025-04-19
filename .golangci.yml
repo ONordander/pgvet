@@ -1,0 +1,53 @@
+version: "2"
+linters:
+  default: none
+  enable:
+    - errcheck
+    - exhaustruct
+    - gochecknoinits
+    - gocritic
+    - gosec
+    - govet
+    - iface
+    - ineffassign
+    - nilerr
+    - paralleltest
+    - predeclared
+    - reassign
+    - sloglint
+    - staticcheck
+    - testifylint
+    - thelper
+    - unparam
+    - unused
+  settings:
+    gocritic:
+      disabled-checks:
+        - captLocal
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - errcheck
+          - exhaustruct
+          - gosec
+        path: (_test\.go)
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - gofumpt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

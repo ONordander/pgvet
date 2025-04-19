@@ -1,0 +1,18 @@
+[1;31mmissing-relation-if-not-exists[0m: testdata/idempotency.sql:1
+
+  1 | CREATE TABLE pgcheck (id text PRIMARY KEY)
+
+  [1mViolation[0m: Creating a relation will fail if it already exists, making the migration non idempotent
+  [1mSolution[0m: Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgcheck ...
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#missing-relation-if-not-exists
+........................................................................................................................
+
+[1;31mmissing-index-if-not-exists[0m: testdata/idempotency.sql:8
+
+  8 | CREATE INDEX CONCURRENTLY pgcheck_idx ON pgcheck(id)
+
+  [1mViolation[0m: Creating a named index will fail if it already exists, making the migration non idempotent
+  [1mSolution[0m: Wrap the create statements with guards; e.g. CREATE INDEX CONCURRENTLY IF NOT EXISTS pgcheck_idx ...
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#missing-index-if-not-exists
+........................................................................................................................
+

@@ -1,0 +1,1 @@
+CREATE ERROR test;

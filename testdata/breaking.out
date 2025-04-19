@@ -1,0 +1,27 @@
+[1;31mdrop-column[0m: testdata/breaking.sql:1
+
+  1 | ALTER TABLE pgcheck DROP COLUMN value
+
+  [1mViolation[0m: Dropping a column is not backwards compatible and may break existing clients
+  [1mSolution[0m: Update the application code to no longer use the column before applying the change
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#drop-column
+........................................................................................................................
+
+[1;31mrename-column[0m: testdata/breaking.sql:6
+
+  6 | ALTER TABLE pgcheck RENAME column oldvalue TO newvalue
+
+  [1mViolation[0m: Renaming a column is not backwards compatible and may break existing clients
+  [1mSolution[0m: Add the new column as nullable and write to both from the application. Perform a backfill. Update application code to only use the new column. Delete the old column
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#rename-column
+........................................................................................................................
+
+[1;31mdrop-table[0m: testdata/breaking.sql:11
+
+  11 | DROP TABLE pgcheck
+
+  [1mViolation[0m: Dropping a table is not backwards compatible and may break existing clients
+  [1mSolution[0m: Update the application code to no longer use the table before applying the change
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#drop-table
+........................................................................................................................
+

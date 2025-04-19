@@ -1,0 +1,3 @@
+rules:
+  missing-index-if-not-exists:
+    enabled: false

@@ -1,0 +1,9 @@
+[1;31mnon-concurrent-index-creation[0m: testdata/index.sql:1
+
+  1 | CREATE INDEX IF NOT EXISTS pgcheck_idx ON pgcheck(value)
+
+  [1mViolation[0m: Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built
+  [1mSolution[0m: Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index-creation
+........................................................................................................................
+
