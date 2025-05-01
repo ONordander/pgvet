@@ -11,3 +11,6 @@ ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENC
 ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);
 
 ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;
+
+-- Add index for missing foreign key index rule
+CREATE INDEX CONCURRENTLY ON pgcheck(reference);
