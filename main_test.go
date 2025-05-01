@@ -24,7 +24,7 @@ func TestLint(t *testing.T) {
 		"breaking":    {"testdata/breaking.sql", "testdata/breaking.out", nil},
 		"nullability": {"testdata/nullability.sql", "testdata/nullability.out", nil},
 		"idempotency": {"testdata/idempotency.sql", "testdata/idempotency.out", nil},
-		"index":       {"testdata/index.sql", "testdata/index.out", nil},
+		"locking":     {"testdata/locking.sql", "testdata/locking.out", nil},
 		"formatting":  {"testdata/formatting.sql", "testdata/formatting.out", nil},
 		"noerrors":    {"testdata/noerrors.sql", "testdata/noerrors.out", nil},
 		"with-config": {"testdata/with-config.sql", "testdata/with-config.out", ptr("testdata/with-config.yaml")},

@@ -7,7 +7,6 @@ import (
 const (
 	breaking    = "breaking change"
 	nullability = "nullability"
-	indexing    = "indexing"
 	idempotency = "idempotency"
 	locking     = "locking"
 )
@@ -25,7 +24,7 @@ func AllRules() []Rule {
 	var rules []Rule
 	rules = append(rules, breakingRules...)
 	rules = append(rules, nullabilityRules...)
-	rules = append(rules, indexingRules...)
+	rules = append(rules, lockingRules...)
 	rules = append(rules, idempotencyRules...)
 	return rules
 }
