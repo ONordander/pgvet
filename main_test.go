@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRun(t *testing.T) {
+func TestLint(t *testing.T) {
 	t.Parallel()
 
 	shouldWriteTestdata := os.Getenv("OVERWRITE_TESTDATA") == "true"
@@ -48,7 +48,7 @@ func TestRun(t *testing.T) {
 	}
 }
 
-func TestRunPatterns(t *testing.T) {
+func TestLintPatterns(t *testing.T) {
 	t.Parallel()
 
 	t.Run("Folder", func(t *testing.T) {
@@ -88,7 +88,7 @@ func TestRunPatterns(t *testing.T) {
 	})
 }
 
-func TestFormatJson(t *testing.T) {
+func TestLintFormatJson(t *testing.T) {
 	t.Parallel()
 
 	var wOut, wErr strings.Builder
@@ -103,7 +103,7 @@ func TestFormatJson(t *testing.T) {
 	assert.NotEmpty(t, report)
 }
 
-func TestRunError(t *testing.T) {
+func TestLintError(t *testing.T) {
 	t.Parallel()
 
 	t.Run("Syntax error", func(t *testing.T) {
