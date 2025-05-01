@@ -125,6 +125,8 @@ For examples see `./testdata`.
 
 ### drop-column
 
+Enabled by default: ✓
+
 Dropping a column is not backwards compatible and may break existing clients that depend on the column.
 
 **Solution**:
@@ -136,6 +138,8 @@ Dropping a column is not backwards compatible and may break existing clients tha
 
 ### drop-table
 
+Enabled by default: ✓
+
 Dropping a table is not backwards compatible and may break existing clients that depend on the table.
 
 **Solution**:
@@ -146,6 +150,8 @@ Dropping a table is not backwards compatible and may break existing clients that
 ***
 
 ### rename-column
+
+Enabled by default: ✓
 
 Renaming a column is not backwards compatible and may break existing clients that depend on the old column name.
 
@@ -162,6 +168,8 @@ Renaming a column is not backwards compatible and may break existing clients tha
 ## Invalid null changes
 
 ### add-non-null-column
+
+Enabled by default: ✓
 
 Adding a non-nullable column without a default will fail if the table is populated.
 
@@ -182,6 +190,8 @@ ALTER TABLE pgcheck ADD COLUMN value text DEFAULT '1';
 
 ### set-non-null-column
 
+Enabled by default: ✓
+
 Altering a column to be non-nullable might fail if the column contains null values.
 
 **Solution**:
@@ -197,6 +207,8 @@ Altering a column to be non-nullable might fail if the column contains null valu
 ## Locking
 
 ### non-concurrent-index-creation
+
+Enabled by default: ✓
 
 Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built.
 
@@ -215,6 +227,8 @@ CREATE INDEX CONCURRENTLY pgcheck_value_idx ON pgcheck(value);
 ***
 
 ### constraint-excessive-lock
+
+Enabled by default: ✓
 
 Adding a constraint acquires a lock blocking any writes (and potential reads) during the constraint validation.
 Further, if the constraint is a foreign key reference it acquires a lock on both tables.
@@ -236,6 +250,8 @@ See [Postgres - add table constraint](https://www.postgresql.org/docs/current/sq
 
 ### missing-relation-if-not-exists
 
+Enabled by default: ✓
+
 Creating a relation will fail if it already exists, making the migration non idempotent.
 
 **Solution**:
@@ -249,6 +265,8 @@ CREATE TABLE IF NOT EXISTS pgcheck (id text PRIMARY KEY);
 ***
 
 ### missing-index-if-not-exists
+
+Enabled by default: ✓
 
 Creating a named index will fail if it already exists, making the migration non idempotent.
 
@@ -266,7 +284,7 @@ CREATE INDEX IF NOT EXISTS pgcheck_value_idx ON pgcheck(value);
 
 ### missing-foreign-key-index
 
-**Disabled by default**
+Enabled by default: 🗙
 
 When adding a foreign key constraint PostgreSQL will not automatically create an index for you.\
 The referenced column is often used in joins and lookups, and thus can benefit from an index.
