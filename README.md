@@ -6,7 +6,7 @@ It aims to aid in writing migrations according to best practices and detect:
 
 - Failing changes
 - Non backwards compatible changes
-- Migrations that cause deadlocks
+- Migrations that use excessive locking or risk deadlocks
 - Non idempotent changes
 
 # Installation
@@ -194,7 +194,7 @@ Altering a column to be non-nullable might fail if the column contains null valu
 
 ***
 
-## Indexing best practices
+## Locking
 
 ### non-concurrent-index-creation
 

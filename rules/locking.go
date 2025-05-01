@@ -4,13 +4,13 @@ import (
 	pgquery "github.com/pganalyze/pg_query_go/v6"
 )
 
-var indexingRules = []Rule{
+var lockingRules = []Rule{
 	{
 		Code:     "non-concurrent-index-creation",
 		Slug:     "Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built",
 		Help:     "Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction",
 		Fn:       nonConcurrentIndexCreation,
-		Category: indexing,
+		Category: locking,
 	},
 }
 
