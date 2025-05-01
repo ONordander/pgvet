@@ -74,3 +74,53 @@ func TestNonConcurrentIndex(t *testing.T) {
 		assert.Empty(t, res)
 	})
 }
+
+func TestConstraintKeyExcessiveLock(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Should find single violation", func(t *testing.T) {
+		t.Parallel()
+
+		tree := mustParse(t, "ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);")
+		require.Len(t, tree.Stmts, 1)
+
+		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		require.Len(t, res, 1)
+
+		assert.EqualValues(t, 0, res[0].StmtStart)
+		assert.Greater(t, res[0].StmtEnd, res[0].StmtStart)
+		assert.Equal(t, testCode, res[0].Code)
+		assert.Equal(t, testSlug, res[0].Slug)
+		assert.Equal(t, testHelp, res[0].Help)
+	})
+
+	t.Run("Should find multiple violations", func(t *testing.T) {
+		t.Parallel()
+
+		var b strings.Builder
+		b.WriteString("ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);\n")
+		b.WriteString("ALTER TABLE pgcheck ADD COLUMN value text;\n")
+		b.WriteString("ALTER TABLE pgcheck ADD CONSTRAINT parent_fk FOREIGN KEY (parent) REFERENCES parent(id);\n")
+		tree := mustParse(t, b.String())
+		require.Len(t, tree.Stmts, 3)
+
+		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		require.Len(t, res, 2)
+
+		assert.EqualValues(t, 0, res[0].StmtStart)
+		assert.EqualValues(t, 137, res[1].StmtStart)
+	})
+
+	t.Run("Should not constraint that skip validation", func(t *testing.T) {
+		t.Parallel()
+
+		tree := mustParse(t, "ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;")
+		require.Len(t, tree.Stmts, 1)
+
+		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		assert.Empty(t, res)
+	})
+}
