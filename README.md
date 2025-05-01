@@ -200,7 +200,7 @@ Altering a column to be non-nullable might fail if the column contains null valu
 
 Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built.
 
-See: https://www.postgresql.org/docs/current/explicit-locking.html (ShareLock)
+See: [Postgres - explicit locking](https://www.postgresql.org/docs/current/explicit-locking.html) (ShareLock)
 
 **Solution**:
 
@@ -213,6 +213,24 @@ CREATE INDEX CONCURRENTLY pgcheck_value_idx ON pgcheck(value);
 *Note*: this cannot be done inside a transaction.
 
 ***
+
+### constraint-excessive-lock
+
+Adding a constraint acquires a lock blocking any writes (and potential reads) during the constraint validation.
+Further, if the constraint is a foreign key reference it acquires a lock on both tables.
+
+See [Postgres - add table constraint](https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-DESC-ADD-TABLE-CONSTRAINT)
+
+**Solution**:
+
+1. Add the constraint with the `NOT VALID` option forcing it to not validate the constraint initially. This is a very fast operation as no validation is needed.
+    ```sql
+    ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;
+    ```
+1. Validate the constraint in a subsequent transaction. This acquires a more relaxed lock that that does not block reads or writes.
+    ```sql
+    ALTER TABLE pgcheck VALIDATE CONSTRAINT reference_fk;
+    ```
 
 ## Idempotency
 

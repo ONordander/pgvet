@@ -7,3 +7,12 @@
   [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index-creation
 ........................................................................................................................
 
+[1;31mconstraint-excessive-lock[0m: testdata/locking.sql:8
+
+  8 | ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id)
+
+  [1mViolation[0m: Adding a constraint acquires a lock blocking any writes during the constraint validation
+  [1mSolution[0m: Append the `NOT VALID` option and then in a following transaction perform `ALTER TABLE VALIDATE CONSTRAINT ...`
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#constraint-excessive-lock
+........................................................................................................................
+
