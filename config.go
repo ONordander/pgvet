@@ -19,7 +19,7 @@ type Config struct {
 func defaultConfig() Config {
 	ruleConfigs := map[rules.Code]ruleConfig{}
 	for _, rule := range rules.AllRules() {
-		enabled := !rule.Experimental
+		enabled := !rule.DisabledByDefault
 		ruleConfigs[rule.Code] = ruleConfig{Enabled: enabled}
 	}
 

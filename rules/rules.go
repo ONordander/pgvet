@@ -5,19 +5,20 @@ import (
 )
 
 const (
-	breaking    = "breaking change"
-	nullability = "nullability"
-	idempotency = "idempotency"
-	locking     = "locking"
+	breaking      = "breaking change"
+	nullability   = "nullability"
+	idempotency   = "idempotency"
+	locking       = "locking"
+	miscellaneous = "miscellaneous"
 )
 
 type Rule struct {
-	Code         Code
-	Slug         string
-	Help         string
-	Fn           func(*pgquery.ParseResult, Code, string, string) ([]Result, error)
-	Category     string
-	Experimental bool
+	Code              Code
+	Slug              string
+	Help              string
+	Fn                func(*pgquery.ParseResult, Code, string, string) ([]Result, error)
+	Category          string
+	DisabledByDefault bool
 }
 
 func AllRules() []Rule {
@@ -26,6 +27,7 @@ func AllRules() []Rule {
 	rules = append(rules, nullabilityRules...)
 	rules = append(rules, lockingRules...)
 	rules = append(rules, idempotencyRules...)
+	rules = append(rules, miscellaneousRules...)
 	return rules
 }
 

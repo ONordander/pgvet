@@ -14,6 +14,7 @@ import (
 func TestLint(t *testing.T) {
 	t.Parallel()
 
+	configFile := "testdata/config-all-enabled.yaml"
 	shouldWriteTestdata := os.Getenv("OVERWRITE_TESTDATA") == "true"
 
 	cases := map[string]struct {
@@ -21,13 +22,14 @@ func TestLint(t *testing.T) {
 		expectedfile string
 		configfile   *string
 	}{
-		"breaking":    {"testdata/breaking.sql", "testdata/breaking.out", nil},
-		"nullability": {"testdata/nullability.sql", "testdata/nullability.out", nil},
-		"idempotency": {"testdata/idempotency.sql", "testdata/idempotency.out", nil},
-		"locking":     {"testdata/locking.sql", "testdata/locking.out", nil},
-		"formatting":  {"testdata/formatting.sql", "testdata/formatting.out", nil},
-		"noerrors":    {"testdata/noerrors.sql", "testdata/noerrors.out", nil},
-		"with-config": {"testdata/with-config.sql", "testdata/with-config.out", ptr("testdata/with-config.yaml")},
+		"breaking":      {"testdata/breaking.sql", "testdata/breaking.out", &configFile},
+		"nullability":   {"testdata/nullability.sql", "testdata/nullability.out", &configFile},
+		"idempotency":   {"testdata/idempotency.sql", "testdata/idempotency.out", &configFile},
+		"locking":       {"testdata/locking.sql", "testdata/locking.out", &configFile},
+		"formatting":    {"testdata/formatting.sql", "testdata/formatting.out", &configFile},
+		"noerrors":      {"testdata/noerrors.sql", "testdata/noerrors.out", &configFile},
+		"miscellaneous": {"testdata/miscellaneous.sql", "testdata/miscellaneous.out", &configFile},
+		"with-config":   {"testdata/with-config.sql", "testdata/with-config.out", ptr("testdata/with-config.yaml")},
 	}
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {

@@ -261,3 +261,20 @@ CREATE INDEX IF NOT EXISTS pgcheck_value_idx ON pgcheck(value);
 ```
 
 ***
+
+## Miscellaneous
+
+### missing-foreign-key-index
+
+**Disabled by default**
+
+When adding a foreign key constraint PostgreSQL will not automatically create an index for you.\
+The referenced column is often used in joins and lookups, and thus can benefit from an index.
+
+**Solution**:
+
+Create an index for the referenced column:
+
+```sql
+CREATE INDEX CONCURRENTLY IF NOT EXISTS pgcheck_idx ON pgcheck(reference);
+```
