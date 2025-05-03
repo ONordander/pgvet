@@ -1,0 +1,27 @@
+name: Rule benchmark
+description: Save benchmark result on main to compare with in PRs
+
+on:
+  push:
+    branches: [main]
+    paths: ["rules/*.go"]
+  workflow_dispatch: {}
+
+jobs:
+  benchmark:
+    permissions:
+      contents: read # access to check out code and install dependencies
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Benchmark
+      run: go test -bench=. -benchtime=10s -count=10 > benchmark.out
+
+    - name: Save benchmark
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark.main.out
+        path: benchmark.out
+        retention-days: 90
+        overwrite: true
