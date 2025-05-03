@@ -41,13 +41,13 @@ add-non-null-column: migrations/001.sql:1
   Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#add-non-null-column
 ........................................................................................................................
 
-non-concurrent-index-creation: migrations/001.sql:5
+non-concurrent-index: migrations/001.sql:5
 
   5 | CREATE INDEX pgcheck_name_key ON pgcheck(name)
 
-  Violation: Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built.
-  Solution: Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction
-  Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index-creation
+  Violation: Creating/dropping an index non-concurrently acquires a lock on the table that block writes for the duration of the operation
+  Solution: Create/drop the index concurrently using the `CONCURRENTLY` option to avoid blocking. Note: this cannot be done inside a transaction
+  Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index
 ........................................................................................................................
 
 missing-if-not-exists: migrations/001.sql:5
@@ -65,7 +65,7 @@ missing-if-not-exists: migrations/001.sql:5
 ```shell
 ⇥ pgcheck lint --format=json migrations/001.sql
 
-[{"file":"migrations/001.sql","code":"add-non-null-column","statement":"-- migrations/001.sql\nALTER TABLE pgcheck ADD COLUMN name text NOT NULL","statementLine":1,"slug":"Adding a non-nullable column without a default will fail if the table is populated","help":"Make the column nullable or add a default"},{"file":"migration.sql","code":"non-concurrent-index-creation","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built","help":"Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction"},{"file":"migration.sql","code":"missing-if-not-exists","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an object might fail if it already exists, making the migration non idempotent","help":"Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgcheck ..."}]
+[{"file":"migrations/001.sql","code":"add-non-null-column","statement":"-- migrations/001.sql\nALTER TABLE pgcheck ADD COLUMN name text NOT NULL","statementLine":1,"slug":"Adding a non-nullable column without a default will fail if the table is populated","help":"Make the column nullable or add a default"},{"file":"migration.sql","code":"non-concurrent-index","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built","help":"Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction"},{"file":"migration.sql","code":"missing-if-not-exists","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an object might fail if it already exists, making the migration non idempotent","help":"Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgcheck ..."}]
 ```
 
 ## Disabling rules with configuration
@@ -75,7 +75,7 @@ missing-if-not-exists: migrations/001.sql:5
 rules:
   missing-if-not-exists:
     enabled: false
-  non-concurrent-index-creation:
+  non-concurrent-index:
     enabled: false
 ```
 
@@ -99,7 +99,7 @@ add-non-null-column: migrations/*.sql:1
 -- migration.sql
 ALTER TABLE pgcheck ADD COLUMN name text NOT NULL;
 
--- pgcheck_nolint:non-concurrent-index-creation,missing-if-not-exists
+-- pgcheck_nolint:non-concurrent-index,missing-if-not-exists
 CREATE INDEX pgcheck_name_key ON pgcheck(name);
 ```
 
@@ -129,7 +129,7 @@ For examples see `./testdata`.
 | [change-column-type](#change-column-type)                         | breaking      | ✓  |
 | [add-non-null-column](#add-non-null-column)                       | nullability   | ✓  |
 | [set-non-null-column](#set-non-null-column)                       | nullability   | ✓  |
-| [non-concurrent-index-creation](#non-concurrent-index-creation)   | locking       | ✓  |
+| [non-concurrent-index](#non-concurrent-index)                     | locking       | ✓  |
 | [constraint-excessive-lock](#constraint-excessive-lock)           | locking       | ✓  |
 | [many-alter-table](#many-alter-table)                             | locking       | 🗙  |
 | [missing-if-not-exists](#missing-if-not-exists) | idempotency   | ✓  |
@@ -236,7 +236,7 @@ Altering a column to be non-nullable might fail if the column contains null valu
 
 ## Locking
 
-### non-concurrent-index-creation
+### non-concurrent-index
 
 Enabled by default: ✓
 

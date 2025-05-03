@@ -1,27 +1,36 @@
-[1;31mnon-concurrent-index-creation[0m: testdata/locking.sql:3
+[1;31mnon-concurrent-index[0m: testdata/locking.sql:3
 
   3 | --
-  4 | -- rule: non-concurrent-index-creation
+  4 | -- rule: non-concurrent-index
   5 | --
   6 | CREATE INDEX IF NOT EXISTS pgcheck_idx ON pgcheck(value)
 
-  [1mViolation[0m: Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built
-  [1mSolution[0m: Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction
-  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index-creation
+  [1mViolation[0m: Creating/dropping an index non-concurrently acquires a lock on the table that block writes for the duration of the operation
+  [1mSolution[0m: Create/drop the index concurrently using the `CONCURRENTLY` option to avoid blocking. Note: this cannot be done inside a transaction
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index
 ........................................................................................................................
 
-[1;31mconstraint-excessive-lock[0m: testdata/locking.sql:21
+[1;31mnon-concurrent-index[0m: testdata/locking.sql:13
 
-  21 | ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id)
+  13 | DROP INDEX pgcheck_idx
+
+  [1mViolation[0m: Creating/dropping an index non-concurrently acquires a lock on the table that block writes for the duration of the operation
+  [1mSolution[0m: Create/drop the index concurrently using the `CONCURRENTLY` option to avoid blocking. Note: this cannot be done inside a transaction
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index
+........................................................................................................................
+
+[1;31mconstraint-excessive-lock[0m: testdata/locking.sql:28
+
+  28 | ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id)
 
   [1mViolation[0m: Adding a constraint acquires a lock blocking any writes during the constraint validation
   [1mSolution[0m: Append the `NOT VALID` option and then in a following transaction perform `ALTER TABLE VALIDATE CONSTRAINT ...`
   [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#constraint-excessive-lock
 ........................................................................................................................
 
-[1;31mmany-alter-table[0m: testdata/locking.sql:39
+[1;31mmany-alter-table[0m: testdata/locking.sql:46
 
-  39 | ALTER TABLE secondtable ADD COLUMN value text
+  46 | ALTER TABLE secondtable ADD COLUMN value text
 
   [1mViolation[0m: Experimental: altering multiple tables in a single transaction can cause a deadlock
   [1mSolution[0m: Perform the changes in separate transactions
