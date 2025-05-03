@@ -66,7 +66,7 @@ func main() {
 				enabled = "🗙"
 			}
 			fmt.Fprintf(wOut, "%s%s%s\n", magenta, rule.Code, normal)
-			fmt.Fprintf(wOut, "\t| %s\n", rule.Slug)
+			fmt.Fprintf(wOut, "\t| %s%s%s\n", bold, rule.Slug, normal)
 			fmt.Fprintf(wOut, "\tHelp: %s\n", rule.Help)
 			fmt.Fprintf(wOut, "\tEnabled by default: %s\n", enabled)
 			fmt.Fprintf(wOut, "\tExplanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#%s\n", rule.Code)
