@@ -31,23 +31,28 @@ const (
 func main() {
 	wOut, wErr := os.Stdout, os.Stderr
 
-	flag.CommandLine.SetOutput(wErr)
-	verbose := flag.Bool("verbose", false, "Set verbose debugging output")
-	format := flag.String("format", "text", "Set output format, text or json. Text is default")
-	config := flag.String("config", "", "Config file")
-	flag.Usage = func() {
+	flagSet := flag.NewFlagSet("lint", flag.ExitOnError)
+	flagSet.SetOutput(wErr)
+	verbose := flagSet.Bool("verbose", false, "Set verbose debugging output")
+	format := flagSet.String("format", "text", "Set output format, text or json. Text is default")
+	config := flagSet.String("config", "", "Config file")
+	flagSet.Usage = func() {
 		fmt.Fprint(wErr, "Usage:\n")
-		fmt.Fprint(wErr, "\t./pgcheck lint [-verbose] [-config <config.yaml>] <filepattern>...\n")
+		fmt.Fprint(wErr, "\t./pgcheck lint [--verbose] [--config <config.yaml>] <filepattern>...\n")
 		fmt.Fprint(wErr, "\t./pgcheck --help\n")
 		fmt.Fprint(wErr, "\t./pgcheck version\n")
 		fmt.Fprint(wErr, "\t./pgcheck license\n")
-		flag.PrintDefaults()
+		flagSet.PrintDefaults()
 		fmt.Fprint(wErr, "Example:\n")
-		fmt.Fprint(wErr, "\t./pgcheck lint -config config.yaml migrations/*.sql\n")
+		fmt.Fprint(wErr, "\t./pgcheck lint --config=config.yaml migrations/*.sql\n")
 	}
-	flag.Parse()
 
-	switch flag.Arg(0) {
+	if len(os.Args) < 2 {
+		flagSet.Usage()
+		os.Exit(2)
+	}
+
+	switch os.Args[1] {
 	case "license":
 		fmt.Fprint(wOut, notice)
 		return
@@ -68,8 +73,9 @@ func main() {
 			fmt.Fprintf(wOut, "\tCategory: %s\n\n", rule.Category)
 		}
 	case "lint":
-		if flag.NArg() < 2 {
-			flag.Usage()
+		_ = flagSet.Parse(os.Args[2:])
+		if flagSet.NArg() < 1 {
+			flagSet.Usage()
 			os.Exit(2)
 		}
 
@@ -79,11 +85,11 @@ func main() {
 		}
 
 		// Multi args to allow usage where the shell expands wildcards like: ./pgcheck migrations/*.sql
-		patterns := flag.Args()[1:]
+		patterns := flagSet.Args()[0:]
 
 		os.Exit(lint(wOut, wErr, *verbose, patterns, configpath, *format))
 	default:
-		flag.Usage()
+		flagSet.Usage()
 		os.Exit(2)
 	}
 }

@@ -63,7 +63,7 @@ missing-index-if-not-exists: migrations/001.sql:5
 ## JSON formatting
 
 ```shell
-⇥ pgcheck --format json lint migrations/001.sql
+⇥ pgcheck lint --format=json migrations/001.sql
 
 [{"file":"migrations/001.sql","code":"add-non-null-column","statement":"-- migrations/001.sql\nALTER TABLE pgcheck ADD COLUMN name text NOT NULL","statementLine":1,"slug":"Adding a non-nullable column without a default will fail if the table is populated","help":"Make the column nullable or add a default"},{"file":"migration.sql","code":"non-concurrent-index-creation","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built","help":"Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction"},{"file":"migration.sql","code":"missing-index-if-not-exists","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating a named index will fail if it already exists, making the migration non idempotent","help":"Wrap the create statements with guards; e.g. CREATE INDEX CONCURRENTLY IF NOT EXISTS pgcheck_idx ..."}]
 ```
@@ -80,7 +80,7 @@ rules:
 ```
 
 ```shell
-⇥  pgcheck --config config.yaml lint migrations/001.sql
+⇥  pgcheck lint --config=config.yaml migrations/001.sql
 
 add-non-null-column: migrations/*.sql:1
 
