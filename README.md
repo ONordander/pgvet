@@ -50,13 +50,13 @@ non-concurrent-index-creation: migrations/001.sql:5
   Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index-creation
 ........................................................................................................................
 
-missing-index-if-not-exists: migrations/001.sql:5
+missing-if-not-exists: migrations/001.sql:5
 
   5 | CREATE INDEX pgcheck_name_key ON pgcheck(name)
 
-  Violation: Creating a named index will fail if it already exists, making the migration non idempotent
-  Solution: Wrap the create statements with guards; e.g. CREATE INDEX CONCURRENTLY IF NOT EXISTS pgcheck_idx ...
-  Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#missing-index-if-not-exists
+  [1mViolation[0m: Creating an object might fail if it already exists, making the migration non idempotent
+  [1mSolution[0m: Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgcheck ...
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#missing-if-not-exists
 ........................................................................................................................
 ```
 
@@ -65,7 +65,7 @@ missing-index-if-not-exists: migrations/001.sql:5
 ```shell
 ⇥ pgcheck lint --format=json migrations/001.sql
 
-[{"file":"migrations/001.sql","code":"add-non-null-column","statement":"-- migrations/001.sql\nALTER TABLE pgcheck ADD COLUMN name text NOT NULL","statementLine":1,"slug":"Adding a non-nullable column without a default will fail if the table is populated","help":"Make the column nullable or add a default"},{"file":"migration.sql","code":"non-concurrent-index-creation","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built","help":"Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction"},{"file":"migration.sql","code":"missing-index-if-not-exists","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating a named index will fail if it already exists, making the migration non idempotent","help":"Wrap the create statements with guards; e.g. CREATE INDEX CONCURRENTLY IF NOT EXISTS pgcheck_idx ..."}]
+[{"file":"migrations/001.sql","code":"add-non-null-column","statement":"-- migrations/001.sql\nALTER TABLE pgcheck ADD COLUMN name text NOT NULL","statementLine":1,"slug":"Adding a non-nullable column without a default will fail if the table is populated","help":"Make the column nullable or add a default"},{"file":"migration.sql","code":"non-concurrent-index-creation","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built","help":"Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction"},{"file":"migration.sql","code":"missing-if-not-exists","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an object might fail if it already exists, making the migration non idempotent","help":"Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgcheck ..."}]
 ```
 
 ## Disabling rules with configuration
@@ -73,7 +73,7 @@ missing-index-if-not-exists: migrations/001.sql:5
 ```yaml
 # config.yaml
 rules:
-  missing-index-if-not-exists:
+  missing-if-not-exists:
     enabled: false
   non-concurrent-index-creation:
     enabled: false
@@ -99,7 +99,7 @@ add-non-null-column: migrations/*.sql:1
 -- migration.sql
 ALTER TABLE pgcheck ADD COLUMN name text NOT NULL;
 
--- pgcheck_nolint:non-concurrent-index-creation,missing-index-if-not-exists
+-- pgcheck_nolint:non-concurrent-index-creation,missing-if-not-exists
 CREATE INDEX pgcheck_name_key ON pgcheck(name);
 ```
 
@@ -132,8 +132,7 @@ For examples see `./testdata`.
 | [non-concurrent-index-creation](#non-concurrent-index-creation)   | locking       | ✓  |
 | [constraint-excessive-lock](#constraint-excessive-lock)           | locking       | ✓  |
 | [many-alter-table](#many-alter-table)                             | locking       | 🗙  |
-| [missing-relation-if-not-exists](#missing-relation-if-not-exists) | idempotency   | ✓  |
-| [missing-index-if-not-exists](#missing-index-if-not-exists)       | idempotency   | ✓  |
+| [missing-if-not-exists](#missing-if-not-exists) | idempotency   | ✓  |
 | [missing-foreign-key-index](#missing-foreign-key-index)           | miscellaneous | 🗙  |
 
 ## Breaking changes
@@ -321,11 +320,11 @@ COMMIT;
 
 ## Idempotency
 
-### missing-relation-if-not-exists
+### missing-if-not-exists
 
 Enabled by default: ✓
 
-Creating a relation will fail if it already exists, making the migration non idempotent.
+Creating an object might fail if it already exists, making the migration non idempotent.
 
 **Solution**:
 
@@ -333,22 +332,6 @@ Use the `IF NOT EXISTS` option:
 
 ```sql
 CREATE TABLE IF NOT EXISTS pgcheck (id text PRIMARY KEY);
-```
-
-***
-
-### missing-index-if-not-exists
-
-Enabled by default: ✓
-
-Creating a named index will fail if it already exists, making the migration non idempotent.
-
-**Solution**:
-
-Use the `IF NOT EXISTS` option:
-
-```sql
-CREATE INDEX IF NOT EXISTS pgcheck_value_idx ON pgcheck(value);
 ```
 
 ***
