@@ -121,6 +121,21 @@ add-non-null-column: migration.sql:1
 
 For examples see `./testdata`.
 
+| Rule                           | Category                         | Enabled by default |
+| ------------------------------ | -------------------------------- | ------------------ |
+| [drop-column](#drop-column)                                       | breaking      | ✓  |
+| [drop-table](#drop-table)                                         | breaking      | ✓  |
+| [rename-column](#rename-column)                                   | breaking      | ✓  |
+| [change-column-type](#change-column-type)                         | breaking      | ✓  |
+| [add-non-null-column](#add-non-null-column)                       | nullability   | ✓  |
+| [set-non-null-column](#set-non-null-column)                       | nullability   | ✓  |
+| [non-concurrent-index-creation](#non-concurrent-index-creation)   | locking       | ✓  |
+| [constraint-excessive-lock](#constraint-excessive-lock)           | locking       | ✓  |
+| [many-alter-table](#many-alter-table)                             | locking       | 🗙  |
+| [missing-relation-if-not-exists](#missing-relation-if-not-exists) | idempotency   | ✓  |
+| [missing-index-if-not-exists](#missing-index-if-not-exists)       | idempotency   | ✓  |
+| [missing-foreign-key-index](#missing-foreign-key-index)           | miscellaneous | 🗙  |
+
 ## Breaking changes
 
 ### drop-column
