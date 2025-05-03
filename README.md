@@ -165,6 +165,22 @@ Renaming a column is not backwards compatible and may break existing clients tha
 
 ***
 
+### change-column-type
+
+Enabled by default: ✓
+
+Changing the type of a column is not backwards compatible and may break existing clients that still expect the old type.
+
+**Solution**:
+
+1. Create a new column with the new type
+1. Update the application to write to both columns
+1. Copy the data from the old column to the new column
+1. Update the application to only use the new column
+1. Drop the old column
+
+***
+
 ## Invalid null changes
 
 ### add-non-null-column

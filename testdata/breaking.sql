@@ -12,3 +12,8 @@ DROP TABLE pgcheck;
 
 -- pgcheck_nolint:drop-table
 DROP TABLE pgcheck;
+
+ALTER TABLE pgcheck ALTER COLUMN value TYPE text;
+
+-- pgcheck_nolint:change-column-type
+ALTER TABLE pgcheck ALTER COLUMN value TYPE text;
