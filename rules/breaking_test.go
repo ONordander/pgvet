@@ -145,3 +145,42 @@ func TestRenameColumn(t *testing.T) {
 		assert.EqualValues(t, 93, res[1].StmtStart)
 	})
 }
+
+func TestChangeColumnType(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Should find violation", func(t *testing.T) {
+		t.Parallel()
+
+		tree := mustParse(t, "ALTER TABLE pgcheck ALTER COLUMN value TYPE text;")
+		require.Len(t, tree.Stmts, 1)
+
+		res, err := changeColumnType(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		require.Len(t, res, 1)
+
+		assert.EqualValues(t, 0, res[0].StmtStart)
+		assert.Greater(t, res[0].StmtEnd, res[0].StmtStart)
+		assert.Equal(t, testCode, res[0].Code)
+		assert.Equal(t, testSlug, res[0].Slug)
+		assert.Equal(t, testHelp, res[0].Help)
+	})
+
+	t.Run("Should find multiple violations", func(t *testing.T) {
+		t.Parallel()
+
+		var b strings.Builder
+		b.WriteString("ALTER TABLE pgcheck ALTER COLUMN value TYPE text;\n")
+		b.WriteString("ALTER TABLE pgcheck RENAME COLUMN value TO value2;\n")
+		b.WriteString("ALTER TABLE pgcheck ALTER COLUMN value TYPE varchar(36);\n")
+		tree := mustParse(t, b.String())
+		require.Len(t, tree.Stmts, 3)
+
+		res, err := changeColumnType(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		require.Len(t, res, 2)
+
+		assert.EqualValues(t, 0, res[0].StmtStart)
+		assert.EqualValues(t, 100, res[1].StmtStart)
+	})
+}
