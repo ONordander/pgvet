@@ -7,8 +7,8 @@ import (
 var breakingRules = []Rule{
 	{
 		Code:     "drop-column",
-		Slug:     "Dropping a column is not backwards compatible and may break existing clients",
 		Help:     "Update the application code to no longer use the column before applying the change",
+		Slug:     "Dropping a column is not backwards compatible and may break existing clients",
 		Fn:       dropColumn,
 		Category: breaking,
 	},
