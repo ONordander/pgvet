@@ -19,6 +19,14 @@ var lockingRules = []Rule{
 		Fn:       constraintExcessiveLock,
 		Category: locking,
 	},
+	{
+		Code:              "many-alter-table",
+		Slug:              "Experimental: altering multiple tables in a single transaction can cause a deadlock",
+		Help:              "Perform the changes in separate transactions",
+		Fn:                manyAlterTable,
+		Category:          locking,
+		DisabledByDefault: true,
+	},
 }
 
 func nonConcurrentIndexCreation(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
@@ -62,4 +70,71 @@ func constraintExcessiveLock(tree *pgquery.ParseResult, code Code, slug, help st
 	}
 
 	return results, nil
+}
+
+func manyAlterTable(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+	var results []Result
+
+	tracker := newTracker()
+
+	for _, stmt := range tree.Stmts {
+		// Check for alter table
+		if alterTableStmt := stmt.GetStmt().GetAlterTableStmt(); alterTableStmt != nil {
+			if tracker.add(alterTableStmt.GetRelation().GetRelname()) > 1 {
+				r := Result{
+					Slug:      slug,
+					Help:      help,
+					Code:      code,
+					StmtStart: stmt.GetStmtLocation(),
+					StmtEnd:   stmt.GetStmtLocation() + stmt.GetStmtLen(),
+				}
+				results = append(results, r)
+			}
+		}
+
+		// Check for new tx or commit
+		if txStmt := stmt.GetStmt().GetTransactionStmt(); txStmt != nil {
+			switch txStmt.GetKind() {
+			case pgquery.TransactionStmtKind_TRANS_STMT_COMMIT:
+				tracker.commitTx()
+			case pgquery.TransactionStmtKind_TRANS_STMT_BEGIN, pgquery.TransactionStmtKind_TRANS_STMT_START:
+				tracker.beginTx()
+			}
+		}
+	}
+
+	return results, nil
+}
+
+type txTracker struct {
+	tableChanges map[string]bool
+	inTx         bool
+}
+
+func newTracker() *txTracker {
+	tracker := &txTracker{
+		tableChanges: map[string]bool{},
+		inTx:         true, // Assume that we start in a transaction
+	}
+	return tracker
+}
+
+// Returns the number of tables in the current tx after the add
+func (t *txTracker) add(tableName string) int {
+	if !t.inTx {
+		return 0
+	}
+	t.tableChanges[tableName] = true
+	return len(t.tableChanges)
+}
+
+func (t *txTracker) beginTx() {
+	// If we're already in a TX this is a no-op with a warning
+	t.inTx = true
+}
+
+func (t *txTracker) commitTx() {
+	// If we're not in a TX this is a no-op with a warning
+	t.tableChanges = map[string]bool{}
+	t.inTx = false
 }

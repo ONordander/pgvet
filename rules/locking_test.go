@@ -113,7 +113,7 @@ func TestConstraintKeyExcessiveLock(t *testing.T) {
 		assert.EqualValues(t, 137, res[1].StmtStart)
 	})
 
-	t.Run("Should not constraint that skip validation", func(t *testing.T) {
+	t.Run("Should find not constraint that has NOT VALID", func(t *testing.T) {
 		t.Parallel()
 
 		tree := mustParse(t, "ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;")
@@ -122,5 +122,119 @@ func TestConstraintKeyExcessiveLock(t *testing.T) {
 		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
 		assert.Empty(t, res)
+	})
+}
+
+func TestManyAlterTable(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Should find single violation", func(t *testing.T) {
+		t.Parallel()
+
+		var b strings.Builder
+		b.WriteString("BEGIN;\n")
+		b.WriteString("ALTER TABLE pgcheck ADD COLUMN value text;\n")
+		b.WriteString("ALTER TABLE othertable ADD COLUMN value text;\n")
+		b.WriteString("COMMIT;\n")
+		tree := mustParse(t, b.String())
+		require.Len(t, tree.Stmts, 4)
+
+		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		require.Len(t, res, 1)
+
+		assert.EqualValues(t, 49, res[0].StmtStart)
+		assert.Greater(t, res[0].StmtEnd, res[0].StmtStart)
+		assert.Equal(t, testCode, res[0].Code)
+		assert.Equal(t, testSlug, res[0].Slug)
+		assert.Equal(t, testHelp, res[0].Help)
+	})
+
+	t.Run("Should find multiple violations", func(t *testing.T) {
+		t.Parallel()
+
+		var b strings.Builder
+		b.WriteString("BEGIN;\n")
+		b.WriteString("ALTER TABLE pgcheck ADD COLUMN value text;\n")
+		b.WriteString("ALTER TABLE othertable ADD COLUMN value text;\n")
+		b.WriteString("ALTER TABLE thirdtable ADD COLUMN value text;\n")
+		b.WriteString("COMMIT;\n")
+		tree := mustParse(t, b.String())
+		require.Len(t, tree.Stmts, 5)
+
+		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		require.Len(t, res, 2)
+
+		assert.EqualValues(t, 49, res[0].StmtStart)
+		assert.EqualValues(t, 95, res[1].StmtStart)
+	})
+
+	t.Run("Should assume that the query starts in a transaction", func(t *testing.T) {
+		t.Parallel()
+
+		var b strings.Builder
+		b.WriteString("ALTER TABLE pgcheck ADD COLUMN value text;\n")
+		b.WriteString("ALTER TABLE othertable ADD COLUMN value text;\n")
+		b.WriteString("COMMIT;\n")
+		tree := mustParse(t, b.String())
+		require.Len(t, tree.Stmts, 3)
+
+		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		assert.Len(t, res, 1)
+	})
+
+	t.Run("Should not find changes in separate transactions", func(t *testing.T) {
+		t.Parallel()
+
+		var b strings.Builder
+		b.WriteString("BEGIN;\n")
+		b.WriteString("ALTER TABLE pgcheck ADD COLUMN value text;\n")
+		b.WriteString("COMMIT;\n")
+		b.WriteString("BEGIN;\n")
+		b.WriteString("ALTER TABLE othertable ADD COLUMN value text;\n")
+		b.WriteString("COMMIT;\n")
+		tree := mustParse(t, b.String())
+		require.Len(t, tree.Stmts, 6)
+
+		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		assert.Len(t, res, 0)
+	})
+
+	t.Run("Should not find changes outside of transactions", func(t *testing.T) {
+		t.Parallel()
+
+		var b strings.Builder
+		b.WriteString("BEGIN;\n")
+		b.WriteString("ALTER TABLE pgcheck ADD COLUMN value text;\n")
+		b.WriteString("COMMIT;\n")
+		b.WriteString("ALTER TABLE othertable ADD COLUMN value text;\n")
+		b.WriteString("ALTER TABLE thirdtable ADD COLUMN value text;\n")
+		tree := mustParse(t, b.String())
+		require.Len(t, tree.Stmts, 5)
+
+		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		assert.Len(t, res, 0)
+	})
+
+	t.Run("Should work with END/START TRANSACTION", func(t *testing.T) {
+		t.Parallel()
+
+		var b strings.Builder
+		b.WriteString("BEGIN;\n")
+		b.WriteString("ALTER TABLE pgcheck ADD COLUMN value text;\n")
+		b.WriteString("END TRANSACTION;\n")
+		b.WriteString("START TRANSACTION;\n")
+		b.WriteString("ALTER TABLE othertable ADD COLUMN value text;\n")
+		b.WriteString("COMMIT;\n")
+		tree := mustParse(t, b.String())
+		require.Len(t, tree.Stmts, 6)
+
+		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		require.NoError(t, err)
+		assert.Len(t, res, 0)
 	})
 }

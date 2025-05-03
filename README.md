@@ -262,6 +262,48 @@ See [Postgres - add table constraint](https://www.postgresql.org/docs/current/sq
     ALTER TABLE pgcheck VALIDATE CONSTRAINT reference_fk;
     ```
 
+### many-alter-table
+
+Enabled by default: 🗙
+
+Experimental: altering multiple tables in a single transaction can cause a deadlock if an application locks the same tables in a different order.
+
+Example:
+
+```sql
+-- migrations/001.sql
+BEGIN;
+ALTER TABLE pgcheck ADD COLUMN value text; -- acquires an ACCESS EXCLUSIVE lock
+ALTER TABLE othertable ADD COLUMN value text; -- tries to acquire an ACCESS EXCLUSIVE lock but has to wait for the application code to release its lock
+COMMIT;
+```
+
+```sql
+-- application code
+BEGIN;
+UPDATE othertable SET name = 'newname' WHERE id = 1; -- acquires a ROW EXCLUSIVE lock that conflicts with ACCESS EXCLUSIVE
+UPDATE pgcheck SET name = 'newname' WHERE id = 1; -- this fails because the migration has a lock on 'pgcheck' and is waiting for a lock on 'othertable'
+COMMIT;
+```
+
+
+See [Postgres - Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
+
+**Solution**:
+
+Perform the changes in separate transactions.
+
+```sql
+-- migrations/001.sql
+BEGIN;
+ALTER TABLE pgcheck ADD COLUMN value text;
+COMMIT;
+
+BEGIN;
+ALTER TABLE othertable ADD COLUMN value text;
+COMMIT;
+```
+
 ## Idempotency
 
 ### missing-relation-if-not-exists
