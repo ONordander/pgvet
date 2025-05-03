@@ -312,3 +312,9 @@ Create an index for the referenced column:
 ```sql
 CREATE INDEX CONCURRENTLY IF NOT EXISTS pgcheck_idx ON pgcheck(reference);
 ```
+
+# Further reading
+
+- [PostgreSQL at Scale: Database Schema Changes Without Downtime](https://medium.com/paypal-tech/postgresql-at-scale-database-schema-changes-without-downtime-20d3749ed680)
+- [PostgreSQL - Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
+- [PostgreSQL - Alter Table](https://www.postgresql.org/docs/current/sql-altertable.html)
