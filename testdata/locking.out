@@ -1,18 +1,30 @@
-[1;31mnon-concurrent-index-creation[0m: testdata/locking.sql:1
+[1;31mnon-concurrent-index-creation[0m: testdata/locking.sql:3
 
-  1 | CREATE INDEX IF NOT EXISTS pgcheck_idx ON pgcheck(value)
+  3 | --
+  4 | -- rule: non-concurrent-index-creation
+  5 | --
+  6 | CREATE INDEX IF NOT EXISTS pgcheck_idx ON pgcheck(value)
 
   [1mViolation[0m: Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built
   [1mSolution[0m: Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction
   [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index-creation
 ........................................................................................................................
 
-[1;31mconstraint-excessive-lock[0m: testdata/locking.sql:8
+[1;31mconstraint-excessive-lock[0m: testdata/locking.sql:21
 
-  8 | ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id)
+  21 | ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id)
 
   [1mViolation[0m: Adding a constraint acquires a lock blocking any writes during the constraint validation
   [1mSolution[0m: Append the `NOT VALID` option and then in a following transaction perform `ALTER TABLE VALIDATE CONSTRAINT ...`
   [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#constraint-excessive-lock
+........................................................................................................................
+
+[1;31mmany-alter-table[0m: testdata/locking.sql:39
+
+  39 | ALTER TABLE secondtable ADD COLUMN value text
+
+  [1mViolation[0m: Experimental: altering multiple tables in a single transaction can cause a deadlock
+  [1mSolution[0m: Perform the changes in separate transactions
+  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#many-alter-table
 ........................................................................................................................
 

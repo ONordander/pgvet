@@ -1,3 +1,5 @@
 rules:
   missing-foreign-key-index:
     enabled: true
+  many-alter-table:
+    enabled: true
