@@ -24,8 +24,8 @@ var notice string
 var version string
 
 const (
-	formatJson = "json"
 	formatText = "text"
+	formatJson = "json"
 )
 
 func main() {
