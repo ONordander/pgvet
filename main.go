@@ -33,12 +33,11 @@ func main() {
 
 	flagSet := flag.NewFlagSet("lint", flag.ExitOnError)
 	flagSet.SetOutput(wErr)
-	verbose := flagSet.Bool("verbose", false, "Set verbose debugging output")
 	format := flagSet.String("format", "text", "Set output format, text or json. Text is default")
 	config := flagSet.String("config", "", "Config file")
 	flagSet.Usage = func() {
 		fmt.Fprint(wErr, "Usage:\n")
-		fmt.Fprint(wErr, "\t./pgcheck lint [--verbose] [--config <config.yaml>] <filepattern>...\n")
+		fmt.Fprint(wErr, "\t./pgcheck lint [--config <config.yaml>] <filepattern>...\n")
 		fmt.Fprint(wErr, "\t./pgcheck --help\n")
 		fmt.Fprint(wErr, "\t./pgcheck version\n")
 		fmt.Fprint(wErr, "\t./pgcheck license\n")
@@ -87,7 +86,7 @@ func main() {
 		// Multi args to allow usage where the shell expands wildcards like: ./pgcheck migrations/*.sql
 		patterns := flagSet.Args()[0:]
 
-		os.Exit(lint(wOut, wErr, *verbose, patterns, configpath, *format))
+		os.Exit(lint(wOut, wErr, patterns, configpath, *format))
 	default:
 		flagSet.Usage()
 		os.Exit(2)
@@ -96,12 +95,11 @@ func main() {
 
 func lint(
 	wOut, wErr io.Writer,
-	verbose bool,
 	patterns []string,
 	configpath *string,
 	format string,
 ) int {
-	logger := configureLogger(verbose, wErr)
+	logger := configureLogger(wErr)
 
 	switch format {
 	case formatJson, formatText:

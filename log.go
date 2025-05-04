@@ -7,11 +7,8 @@ import (
 	"log/slog"
 )
 
-func configureLogger(verbose bool, w io.Writer) *slog.Logger {
+func configureLogger(w io.Writer) *slog.Logger {
 	level := slog.LevelInfo
-	if verbose {
-		level = slog.LevelDebug
-	}
 	slog.SetLogLoggerLevel(level)
 
 	return slog.New(&handler{w: w, level: level})

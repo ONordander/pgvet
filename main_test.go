@@ -35,7 +35,7 @@ func TestLint(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			var wOut, wErr strings.Builder
-			rc := lint(&wOut, &wErr, false, []string{tc.file}, tc.configfile, formatText)
+			rc := lint(&wOut, &wErr, []string{tc.file}, tc.configfile, formatText)
 			require.Zero(t, rc, wErr.String())
 
 			if shouldWriteTestdata {
@@ -56,7 +56,7 @@ func TestLintPatterns(t *testing.T) {
 	t.Run("Folder", func(t *testing.T) {
 		t.Parallel()
 		var wOut, wErr strings.Builder
-		rc := lint(&wOut, &wErr, false, []string{"testdata/patterns/*"}, nil, formatText)
+		rc := lint(&wOut, &wErr, []string{"testdata/patterns/*"}, nil, formatText)
 		require.Zero(t, rc, wErr.String())
 
 		out := wOut.String()
@@ -68,7 +68,7 @@ func TestLintPatterns(t *testing.T) {
 	t.Run("Pattern", func(t *testing.T) {
 		t.Parallel()
 		var wOut, wErr strings.Builder
-		rc := lint(&wOut, &wErr, false, []string{"testdata/patterns/*-pattern.sql"}, nil, formatText)
+		rc := lint(&wOut, &wErr, []string{"testdata/patterns/*-pattern.sql"}, nil, formatText)
 		require.Zero(t, rc, wErr.String())
 
 		out := wOut.String()
@@ -80,7 +80,7 @@ func TestLintPatterns(t *testing.T) {
 	t.Run("Multiple patterns", func(t *testing.T) {
 		t.Parallel()
 		var wOut, wErr strings.Builder
-		rc := lint(&wOut, &wErr, false, []string{"testdata/**/1-pattern.sql", "testdata/**/2-pattern.sql"}, nil, formatText)
+		rc := lint(&wOut, &wErr, []string{"testdata/**/1-pattern.sql", "testdata/**/2-pattern.sql"}, nil, formatText)
 		require.Zero(t, rc, wErr.String())
 
 		out := wOut.String()
@@ -94,7 +94,7 @@ func TestLintFormatJson(t *testing.T) {
 	t.Parallel()
 
 	var wOut, wErr strings.Builder
-	rc := lint(&wOut, &wErr, false, []string{"testdata/patterns/*"}, nil, formatJson)
+	rc := lint(&wOut, &wErr, []string{"testdata/patterns/*"}, nil, formatJson)
 	require.Zero(t, rc, wErr.String())
 
 	out := wOut.String()
@@ -111,7 +111,7 @@ func TestLintError(t *testing.T) {
 	t.Run("Syntax error", func(t *testing.T) {
 		t.Parallel()
 		var wOut, wErr strings.Builder
-		rc := lint(&wOut, &wErr, false, []string{"testdata/error.sql"}, nil, formatText)
+		rc := lint(&wOut, &wErr, []string{"testdata/error.sql"}, nil, formatText)
 		require.NotZero(t, rc)
 
 		assert.Empty(t, wOut.String())
@@ -121,7 +121,7 @@ func TestLintError(t *testing.T) {
 	t.Run("No files", func(t *testing.T) {
 		t.Parallel()
 		var wOut, wErr strings.Builder
-		rc := lint(&wOut, &wErr, false, []string{"testdata/missingfiles*.sql"}, nil, formatText)
+		rc := lint(&wOut, &wErr, []string{"testdata/missingfiles*.sql"}, nil, formatText)
 		require.NotZero(t, rc)
 
 		assert.Empty(t, wOut.String())
@@ -131,7 +131,7 @@ func TestLintError(t *testing.T) {
 	t.Run("Missing config", func(t *testing.T) {
 		t.Parallel()
 		var wOut, wErr strings.Builder
-		rc := lint(&wOut, &wErr, false, []string{"testdata/noerrors.sql"}, ptr("no-config.yaml"), formatText)
+		rc := lint(&wOut, &wErr, []string{"testdata/noerrors.sql"}, ptr("no-config.yaml"), formatText)
 		require.NotZero(t, rc)
 
 		assert.Empty(t, wOut.String())
