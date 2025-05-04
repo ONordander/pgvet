@@ -23,9 +23,9 @@ func TestMissingIfNotExists(t *testing.T) {
 
 		assert.EqualValues(t, 0, res[0].StmtStart)
 		assert.EqualValues(t, 45, res[0].StmtEnd)
-		assert.EqualValues(t, testCode, res[0].Code)
-		assert.EqualValues(t, testSlug, res[0].Slug)
-		assert.EqualValues(t, testHelp, res[0].Help)
+		assert.Equal(t, testCode, res[0].Code)
+		assert.Equal(t, testSlug, res[0].Slug)
+		assert.Equal(t, testHelp, res[0].Help)
 	})
 
 	t.Run("Should find violation for index", func(t *testing.T) {
@@ -40,9 +40,9 @@ func TestMissingIfNotExists(t *testing.T) {
 
 		assert.EqualValues(t, 0, res[0].StmtStart)
 		assert.EqualValues(t, 39, res[0].StmtEnd)
-		assert.EqualValues(t, testCode, res[0].Code)
-		assert.EqualValues(t, testSlug, res[0].Slug)
-		assert.EqualValues(t, testHelp, res[0].Help)
+		assert.Equal(t, testCode, res[0].Code)
+		assert.Equal(t, testSlug, res[0].Slug)
+		assert.Equal(t, testHelp, res[0].Help)
 	})
 
 	t.Run("Should find multiple violations", func(t *testing.T) {

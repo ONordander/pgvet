@@ -217,7 +217,7 @@ func TestManyAlterTable(t *testing.T) {
 
 		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
-		assert.Len(t, res, 0)
+		assert.Empty(t, res)
 	})
 
 	t.Run("Should not find changes outside of transactions", func(t *testing.T) {
@@ -234,7 +234,7 @@ func TestManyAlterTable(t *testing.T) {
 
 		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
-		assert.Len(t, res, 0)
+		assert.Empty(t, res)
 	})
 
 	t.Run("Should work with END/START TRANSACTION", func(t *testing.T) {
@@ -252,6 +252,6 @@ func TestManyAlterTable(t *testing.T) {
 
 		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
-		assert.Len(t, res, 0)
+		assert.Empty(t, res)
 	})
 }

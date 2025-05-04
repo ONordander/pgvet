@@ -1,15 +1,15 @@
-name: Go
+name: Lint
 
 on:
   push:
     branches: [main]
-    paths: ["**/*.go", "go.mod" ,"testdata/**"]
+    paths: ["**/*.go", "go.mod"]
   pull_request:
     branches: [main]
-    paths: ["**/*.go", "go.mod", "testdata/**"]
+    paths: ["**/*.go", "go.mod"]
 
 jobs:
-  build:
+  lint:
     permissions:
       contents: read # access to check out code and install dependencies
     runs-on: ubuntu-latest
@@ -21,8 +21,7 @@ jobs:
       with:
         go-version-file: ./go.mod
 
-    - name: Build
-      run: CGO_ENABLED=0 go build ./...
-
-    - name: Test
-      run: go test ./...
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v7
+      with:
+        version: v2.1.5
