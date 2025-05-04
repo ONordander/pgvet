@@ -1,0 +1,21 @@
+---
+name: "pgcheck"
+author: "@ONordander"
+description: "A Github action to run the PostgreSQL migration linter 'pgcheck'"
+inputs:
+  pattern:
+    description: "File pattern for migrations. E.g. './migrations/*sql'"
+    required: true
+  config:
+    description: "Optional path to a config file"
+    required: false
+    default: "/default-config.yaml"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+  - "--config=${{ inputs.config }}"
+  - "${{ inputs.pattern }}"
+branding:
+  icon: "shield"
+  color: "green"

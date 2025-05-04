@@ -7,7 +7,7 @@ import (
 func BenchmarkLint(b *testing.B) {
 	var writer noOpWriter
 	for b.Loop() {
-		lint(writer, writer, []string{"testdata/benchmark/*.sql"}, ptr("testdata/config-all-enabled.yaml"), formatText)
+		lint(writer, writer, []string{"testdata/benchmark/*.sql"}, ptr("testdata/config-all-enabled.yaml"), formatText, false)
 	}
 }
 

@@ -34,6 +34,7 @@ func main() {
 	flagSet := flag.NewFlagSet("lint", flag.ExitOnError)
 	flagSet.SetOutput(wErr)
 	format := flagSet.String("format", "text", "Set output format, text or json. Text is default")
+	exitStatusOnViolations := flagSet.Bool("exit-status-on-violation", false, "Set exit status >0 if any violations are found")
 	config := flagSet.String("config", "", "Config file")
 	flagSet.Usage = func() {
 		fmt.Fprint(wErr, "Usage:\n")
@@ -86,7 +87,7 @@ func main() {
 		// Multi args to allow usage where the shell expands wildcards like: ./pgcheck migrations/*.sql
 		patterns := flagSet.Args()[0:]
 
-		os.Exit(lint(wOut, wErr, patterns, configpath, *format))
+		os.Exit(lint(wOut, wErr, patterns, configpath, *format, *exitStatusOnViolations))
 	default:
 		flagSet.Usage()
 		os.Exit(2)
@@ -98,6 +99,7 @@ func lint(
 	patterns []string,
 	configpath *string,
 	format string,
+	exitStatusOnViolations bool,
 ) int {
 	logger := configureLogger(wErr)
 
@@ -197,6 +199,10 @@ func lint(
 	}
 
 	fmt.Fprint(wOut, serialized)
+
+	if len(report) > 0 && exitStatusOnViolations {
+		return 1
+	}
 	return 0
 }
 
