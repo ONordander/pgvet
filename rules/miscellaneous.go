@@ -9,12 +9,11 @@ import (
 
 var miscellaneousRules = []Rule{
 	{
-		Code:              "missing-foreign-key-index",
-		Slug:              "PostgreSQL does not create an automatic index for foreign key constraints.",
-		Help:              "Add an index for the foreign key constraint column",
-		Fn:                missingForeignKeyIndex,
-		Category:          miscellaneous,
-		DisabledByDefault: true,
+		Code:     "missing-foreign-key-index",
+		Slug:     "PostgreSQL does not create an automatic index for foreign key constraints.",
+		Help:     "Add an index for the foreign key constraint column",
+		Fn:       missingForeignKeyIndex,
+		Category: miscellaneous,
 	},
 }
 

@@ -1,5 +1,3 @@
 rules:
-  missing-foreign-key-index:
-    enabled: true
   multiple-locks:
     enabled: true

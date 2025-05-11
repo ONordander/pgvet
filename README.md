@@ -145,7 +145,7 @@ For examples see `./testdata`.
 | [constraint-excessive-lock](#constraint-excessive-lock)           | locking       | ✓  |
 | [multiple-locks](#multiple-locks)                                 | locking       | 🗙  |
 | [missing-if-not-exists](#missing-if-not-exists)                   | idempotency   | ✓  |
-| [missing-foreign-key-index](#missing-foreign-key-index)           | miscellaneous | 🗙  |
+| [missing-foreign-key-index](#missing-foreign-key-index)           | miscellaneous | ✓  |
 
 ## Breaking changes
 
@@ -353,7 +353,7 @@ CREATE TABLE IF NOT EXISTS pgcheck (id text PRIMARY KEY);
 
 ### missing-foreign-key-index
 
-Enabled by default: 🗙
+Enabled by default: ✓
 
 When adding a foreign key constraint PostgreSQL will not automatically create an index for you.\
 The referenced column is often used in joins and lookups, and thus can benefit from an index.
