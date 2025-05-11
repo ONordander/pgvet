@@ -8,7 +8,7 @@ import (
 	"github.com/onordander/pgvet/rules"
 )
 
-type lintError struct {
+type violation struct {
 	File          string     `json:"file"`
 	Code          rules.Code `json:"code"`
 	Statement     string     `json:"statement"`
@@ -17,9 +17,27 @@ type lintError struct {
 	Help          string     `json:"help"`
 }
 
-type Report []lintError
+type Report []violation
 
-func (l lintError) formatMsg() string {
+func (r Report) Serialize(format string) (string, error) {
+	if format == formatJson {
+		var b strings.Builder
+		if err := json.NewEncoder(&b).Encode(r); err != nil {
+			return "", err
+		}
+		return b.String(), nil
+	}
+
+	var b strings.Builder
+	for _, entry := range r {
+		b.WriteString(entry.formatMsg())
+		b.WriteString("\n")
+	}
+
+	return b.String(), nil
+}
+
+func (l violation) formatMsg() string {
 	msg := `%s%s%s: %s:%d
 
 %s
@@ -46,22 +64,4 @@ func formatStatement(stmt string, linestart int) string {
 		msg.WriteString(fmt.Sprintf("  %d | %s\n", linestart+i, line))
 	}
 	return msg.String()
-}
-
-func (r Report) Serialize(format string) (string, error) {
-	if format == formatJson {
-		var b strings.Builder
-		if err := json.NewEncoder(&b).Encode(r); err != nil {
-			return "", err
-		}
-		return b.String(), nil
-	}
-
-	var b strings.Builder
-	for _, entry := range r {
-		b.WriteString(entry.formatMsg())
-		b.WriteString("\n")
-	}
-
-	return b.String(), nil
 }

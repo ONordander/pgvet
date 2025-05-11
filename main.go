@@ -180,7 +180,7 @@ func lint(
 		for _, res := range filtered {
 			statementLine := countLines(query[:res.StmtStart], query[res.StmtStart:res.StmtEnd])
 			stmt := strings.TrimSpace(query[res.StmtStart:res.StmtEnd])
-			entry := lintError{
+			entry := violation{
 				File:          f,
 				Code:          res.Code,
 				Statement:     stmt,
