@@ -115,7 +115,7 @@ func TestLintError(t *testing.T) {
 		require.NotZero(t, rc)
 
 		assert.Empty(t, wOut.String())
-		assert.Contains(t, wErr.String(), "Failed to parse file")
+		assert.Contains(t, wErr.String(), "Failed to parse SQL")
 	})
 
 	t.Run("No files", func(t *testing.T) {

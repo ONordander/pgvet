@@ -139,7 +139,7 @@ func lint(
 	}
 
 	if len(fileMap) == 0 {
-		logger.Error("No files found")
+		logger.Error(fmt.Sprintf("No files found for patterns: %v", patterns))
 		return 1
 	}
 
@@ -155,7 +155,7 @@ func lint(
 
 		tree, err := pgquery.Parse(query)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Failed to parse file %q: %s", f, err.Error()))
+			logger.Error(fmt.Sprintf("Failed to parse SQL from file %q: %s", f, err.Error()))
 			return 1
 		}
 
