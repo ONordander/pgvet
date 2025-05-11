@@ -30,7 +30,7 @@
 
 [1;31mmultiple-locks[0m: testdata/locking.sql:46
 
-  46 | ALTER TABLE secondtable ADD COLUMN value text
+  46 | ALTER TABLE secondtable ADD COLUMN IF NOT EXISTS value text
 
   [1mViolation[0m: Experimental: acquiring multiple locks in a single transaction can cause a deadlock
   [1mSolution[0m: Perform the changes in separate transactions

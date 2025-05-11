@@ -42,11 +42,11 @@ COMMIT;
 --
 
 BEGIN;
-ALTER TABLE firsttable ADD COLUMN value text;
-ALTER TABLE secondtable ADD COLUMN value text;
+ALTER TABLE firsttable ADD COLUMN IF NOT EXISTS value text;
+ALTER TABLE secondtable ADD COLUMN IF NOT EXISTS value text;
 
 -- pgvet_nolint:multiple-locks
-ALTER TABLE thirdtable ADD COLUMN value text;
+ALTER TABLE thirdtable ADD COLUMN IF NOT EXISTS value text;
 
 COMMIT;
-ALTER TABLE fourthtable ADD COLUMN value text;
+ALTER TABLE fourthtable ADD COLUMN IF NOT EXISTS value text;

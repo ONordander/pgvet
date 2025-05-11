@@ -1,6 +1,6 @@
 [1;31madd-non-null-column[0m: testdata/nullability.sql:1
 
-  1 | ALTER TABLE pgvet ADD COLUMN value text NOT NULL
+  1 | ALTER TABLE pgvet ADD COLUMN IF NOT EXISTS value text NOT NULL
 
   [1mViolation[0m: Adding a non-nullable column without a default will fail if the table is populated
   [1mSolution[0m: Make the column nullable or add a default
@@ -20,7 +20,7 @@
 
   11 | ALTER TABLE pgvet
   12 |   ALTER COLUMN nullvalue SET NOT NULL,
-  13 |   ADD COLUMN nonnull text NOT NULL
+  13 |   ADD COLUMN IF NOT EXISTS nonnull text NOT NULL
 
   [1mViolation[0m: Adding a non-nullable column without a default will fail if the table is populated
   [1mSolution[0m: Make the column nullable or add a default
@@ -31,7 +31,7 @@
 
   11 | ALTER TABLE pgvet
   12 |   ALTER COLUMN nullvalue SET NOT NULL,
-  13 |   ADD COLUMN nonnull text NOT NULL
+  13 |   ADD COLUMN IF NOT EXISTS nonnull text NOT NULL
 
   [1mViolation[0m: Altering a column to be non-nullable might fail if the column contains null values
   [1mSolution[0m: Ensure that the column does not contain any null values

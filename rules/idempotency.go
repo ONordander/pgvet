@@ -7,7 +7,7 @@ import (
 var idempotencyRules = []Rule{
 	{
 		Code:     "missing-if-not-exists",
-		Slug:     "Creating an object might fail if it already exists, making the migration non idempotent",
+		Slug:     "Creating/altering a relation might fail if it already exists, making the migration non idempotent",
 		Help:     "Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgvet ...",
 		Fn:       missingIfNotExists,
 		Category: idempotency,
@@ -28,6 +28,24 @@ func missingIfNotExists(tree *pgquery.ParseResult, code Code, slug, help string)
 					StmtEnd:   stmt.GetStmtLocation() + stmt.GetStmtLen(),
 				}
 				results = append(results, r)
+			}
+		}
+
+		// Check add columns
+		if alterTableStmt := stmt.GetStmt().GetAlterTableStmt(); alterTableStmt != nil {
+			for _, cmd := range alterTableStmt.GetCmds() {
+				isAddColumn := cmd.GetAlterTableCmd().GetSubtype() == pgquery.AlterTableType_AT_AddColumn
+				missingIfNotExists := cmd.GetAlterTableCmd().GetMissingOk()
+				if isAddColumn && !missingIfNotExists {
+					r := Result{
+						Slug:      slug,
+						Help:      help,
+						Code:      code,
+						StmtStart: stmt.GetStmtLocation(),
+						StmtEnd:   stmt.GetStmtLocation() + stmt.GetStmtLen(),
+					}
+					results = append(results, r)
+				}
 			}
 		}
 
