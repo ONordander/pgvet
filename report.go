@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/onordander/pgcheck/rules"
+	"github.com/onordander/pgvet/rules"
 )
 
 type lintError struct {
@@ -25,7 +25,7 @@ func (l lintError) formatMsg() string {
 %s
   %sViolation%s: %s
   %sSolution%s: %s
-  %sExplanation%s: https://github.com/ONordander/pgcheck?tab=readme-ov-file#%s
+  %sExplanation%s: https://github.com/ONordander/pgvet?tab=readme-ov-file#%s
 %s
 `
 	return fmt.Sprintf(

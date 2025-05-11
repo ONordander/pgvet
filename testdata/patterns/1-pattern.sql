@@ -1,1 +1,1 @@
-CREATE TABLE pgcheck (id text PRIMARY KEY);
+CREATE TABLE pgvet (id text PRIMARY KEY);

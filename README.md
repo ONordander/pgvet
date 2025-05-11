@@ -1,6 +1,6 @@
-# pgcheck
+# pgvet
 
-pgcheck is a database migration linter for [PostgreSQL](https://www.postgresql.org/).
+pgvet is a database migration linter for [PostgreSQL](https://www.postgresql.org/).
 
 Used to avoid problematic migrations and application downtime by detecting:
 
@@ -13,71 +13,71 @@ Available as a installed binary and as a [Github Action](#github-action)
 
 # Installation
 
-Prebuilt binaries are available under [releases](https://github.com/onordander/pgcheck/releases)
+Prebuilt binaries are available under [releases](https://github.com/onordander/pgvet/releases)
 
 Installing with Golang is also possible:
 
 ```shell
-CGO_ENABLED=0 go install github.com/onordander/pgcheck@latest
+CGO_ENABLED=0 go install github.com/onordander/pgvet@latest
 ```
 
 ## Github action
 
 ```
 steps:
-- name: pgcheck
-  uses: onordander/pgcheck@v0.1.0
+- name: pgvet
+  uses: onordander/pgvet@v0.1.0
   with:
     pattern: "./migrations/*.sql"
-    config: "./pgcheck-config.yaml"
+    config: "./pgvet-config.yaml"
 
 # Usage
 
 ```sql
 -- migrations/001.sql
-ALTER TABLE pgcheck ADD COLUMN name text NOT NULL;
+ALTER TABLE pgvet ADD COLUMN name text NOT NULL;
 
-CREATE INDEX pgcheck_name_key ON pgcheck(name);
+CREATE INDEX pgvet_name_key ON pgvet(name);
 ```
 
 ```shell
-⇥ pgcheck lint migrations/*.sql
+⇥ pgvet lint migrations/*.sql
 
 add-non-null-column: migrations/001.sql:1
 
   1 | -- migrations/001.sql
-  2 | ALTER TABLE pgcheck ADD COLUMN name text NOT NULL
+  2 | ALTER TABLE pgvet ADD COLUMN name text NOT NULL
 
   Violation: Adding a non-nullable column without a default will fail if the table is populated
   Solution: Make the column nullable or add a default
-  Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#add-non-null-column
+  Explanation: https://github.com/ONordander/pgvet?tab=readme-ov-file#add-non-null-column
 ........................................................................................................................
 
 non-concurrent-index: migrations/001.sql:5
 
-  5 | CREATE INDEX pgcheck_name_key ON pgcheck(name)
+  5 | CREATE INDEX pgvet_name_key ON pgvet(name)
 
   Violation: Creating/dropping an index non-concurrently acquires a lock on the table that block writes for the duration of the operation
   Solution: Create/drop the index concurrently using the `CONCURRENTLY` option to avoid blocking. Note: this cannot be done inside a transaction
-  Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#non-concurrent-index
+  Explanation: https://github.com/ONordander/pgvet?tab=readme-ov-file#non-concurrent-index
 ........................................................................................................................
 
 missing-if-not-exists: migrations/001.sql:5
 
-  5 | CREATE INDEX pgcheck_name_key ON pgcheck(name)
+  5 | CREATE INDEX pgvet_name_key ON pgvet(name)
 
   Violation: Creating an object might fail if it already exists, making the migration non idempotent
-  Solution: Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgcheck ...
-  Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#missing-if-not-exists
+  Solution: Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgvet ...
+  Explanation: https://github.com/ONordander/pgvet?tab=readme-ov-file#missing-if-not-exists
 ........................................................................................................................
 ```
 
 ## JSON formatting
 
 ```shell
-⇥ pgcheck lint --format=json migrations/001.sql
+⇥ pgvet lint --format=json migrations/001.sql
 
-[{"file":"migrations/001.sql","code":"add-non-null-column","statement":"-- migrations/001.sql\nALTER TABLE pgcheck ADD COLUMN name text NOT NULL","statementLine":1,"slug":"Adding a non-nullable column without a default will fail if the table is populated","help":"Make the column nullable or add a default"},{"file":"migration.sql","code":"non-concurrent-index","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built","help":"Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction"},{"file":"migration.sql","code":"missing-if-not-exists","statement":"CREATE INDEX pgcheck_name_key ON pgcheck(name)","statementLine":4,"slug":"Creating an object might fail if it already exists, making the migration non idempotent","help":"Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgcheck ..."}]
+[{"file":"migrations/001.sql","code":"add-non-null-column","statement":"-- migrations/001.sql\nALTER TABLE pgvet ADD COLUMN name text NOT NULL","statementLine":1,"slug":"Adding a non-nullable column without a default will fail if the table is populated","help":"Make the column nullable or add a default"},{"file":"migration.sql","code":"non-concurrent-index","statement":"CREATE INDEX pgvet_name_key ON pgvet(name)","statementLine":4,"slug":"Creating an index non-concurrently acquires a lock on the table that block writes while the index is being built","help":"Build the index concurrently to avoid blocking. Note: this cannot be done inside a transaction"},{"file":"migration.sql","code":"missing-if-not-exists","statement":"CREATE INDEX pgvet_name_key ON pgvet(name)","statementLine":4,"slug":"Creating an object might fail if it already exists, making the migration non idempotent","help":"Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgvet ..."}]
 ```
 
 ## Disabling rules with configuration
@@ -92,16 +92,16 @@ rules:
 ```
 
 ```shell
-⇥  pgcheck lint --config=config.yaml migrations/001.sql
+⇥  pgvet lint --config=config.yaml migrations/001.sql
 
 add-non-null-column: migrations/*.sql:1
 
   1 | -- migrations/001.sql
-  2 | ALTER TABLE pgcheck ADD COLUMN name text NOT NULL
+  2 | ALTER TABLE pgvet ADD COLUMN name text NOT NULL
 
   Violation: Adding a non-nullable column without a default will fail if the table is populated
   Solution: Make the column nullable or add a default
-  Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#add-non-null-column
+  Explanation: https://github.com/ONordander/pgvet?tab=readme-ov-file#add-non-null-column
 ........................................................................................................................
 ```
 
@@ -109,23 +109,23 @@ add-non-null-column: migrations/*.sql:1
 
 ```sql
 -- migration.sql
-ALTER TABLE pgcheck ADD COLUMN name text NOT NULL;
+ALTER TABLE pgvet ADD COLUMN name text NOT NULL;
 
--- pgcheck_nolint:non-concurrent-index,missing-if-not-exists
-CREATE INDEX pgcheck_name_key ON pgcheck(name);
+-- pgvet_nolint:non-concurrent-index,missing-if-not-exists
+CREATE INDEX pgvet_name_key ON pgvet(name);
 ```
 
 ```shell
-⇥  pgcheck lint migration.sql
+⇥  pgvet lint migration.sql
 
 add-non-null-column: migration.sql:1
 
   1 | -- migrations/001.sql
-  2 | ALTER TABLE pgcheck ADD COLUMN name text NOT NULL
+  2 | ALTER TABLE pgvet ADD COLUMN name text NOT NULL
 
   Violation: Adding a non-nullable column without a default will fail if the table is populated
   Solution: Make the column nullable or add a default
-  Explanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#add-non-null-column
+  Explanation: https://github.com/ONordander/pgvet?tab=readme-ov-file#add-non-null-column
 ........................................................................................................................
 ```
 
@@ -158,7 +158,7 @@ Dropping a column is not backwards compatible and may break existing clients tha
 **Solution**:
 
 1. Update the application code to no longer use the column
-1. Ignore the violation by adding a nolint directive: `-- pgcheck_nolint:drop-column`
+1. Ignore the violation by adding a nolint directive: `-- pgvet_nolint:drop-column`
 
 ***
 
@@ -171,7 +171,7 @@ Dropping a table is not backwards compatible and may break existing clients that
 **Solution**:
 
 1. Update the application code to no longer use the table
-1. Ignore the violation by adding a nolint directive: `-- pgcheck_nolint:drop-table`
+1. Ignore the violation by adding a nolint directive: `-- pgvet_nolint:drop-table`
 
 ***
 
@@ -219,13 +219,13 @@ Adding a non-nullable column without a default will fail if the table is populat
 
 *Option 1*: make the column nullable:
 ```sql
-ALTER TABLE pgcheck ADD COLUMN value text;
+ALTER TABLE pgvet ADD COLUMN value text;
 ```
 
 *Option 2*: give the column a default:
 
 ```sql
-ALTER TABLE pgcheck ADD COLUMN value text DEFAULT '1';
+ALTER TABLE pgvet ADD COLUMN value text DEFAULT '1';
 ```
 
 ***
@@ -241,9 +241,9 @@ Altering a column to be non-nullable might fail if the column contains null valu
 1. Ensure that the application always inserts a value.
 1. Ensure that the column contains no nulls:
     ```sql
-    SELECT COUNT(1) FROM pgcheck WHERE value IS NULL;
+    SELECT COUNT(1) FROM pgvet WHERE value IS NULL;
     ```
-1. Ignore the violation by adding a nolint directive: `-- pgcheck_nolint:set-non-null-column`
+1. Ignore the violation by adding a nolint directive: `-- pgvet_nolint:set-non-null-column`
 
 ***
 
@@ -262,7 +262,7 @@ See: [Postgres - explicit locking](https://www.postgresql.org/docs/current/expli
 Use the `CONCURRENTLY` option:
 
 ```sql
-CREATE INDEX CONCURRENTLY pgcheck_value_idx ON pgcheck(value);
+CREATE INDEX CONCURRENTLY pgvet_value_idx ON pgvet(value);
 ```
 
 *Note*: this cannot be done inside a transaction.
@@ -282,11 +282,11 @@ See [Postgres - add table constraint](https://www.postgresql.org/docs/current/sq
 
 1. Add the constraint with the `NOT VALID` option forcing it to not validate the constraint initially. This is a very fast operation as no validation is needed.
     ```sql
-    ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;
+    ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;
     ```
 1. Validate the constraint in a subsequent transaction. This acquires a more relaxed lock that doesn't block reads or writes.
     ```sql
-    ALTER TABLE pgcheck VALIDATE CONSTRAINT reference_fk;
+    ALTER TABLE pgvet VALIDATE CONSTRAINT reference_fk;
     ```
 
 ### multiple-locks
@@ -300,7 +300,7 @@ Example:
 ```sql
 -- migrations/001.sql
 BEGIN;
-ALTER TABLE pgcheck ADD COLUMN value text; -- acquires an ACCESS EXCLUSIVE lock
+ALTER TABLE pgvet ADD COLUMN value text; -- acquires an ACCESS EXCLUSIVE lock
 ALTER TABLE othertable ADD COLUMN value text; -- tries to acquire an ACCESS EXCLUSIVE lock but has to wait for the application code to release its lock
 COMMIT;
 ```
@@ -309,7 +309,7 @@ COMMIT;
 -- application code
 BEGIN;
 UPDATE othertable SET name = 'newname' WHERE id = 1; -- acquires a ROW EXCLUSIVE lock that conflicts with ACCESS EXCLUSIVE
-UPDATE pgcheck SET name = 'newname' WHERE id = 1; -- this fails because the migration has a lock on 'pgcheck' and is waiting for a lock on 'othertable'
+UPDATE pgvet SET name = 'newname' WHERE id = 1; -- this fails because the migration has a lock on 'pgvet' and is waiting for a lock on 'othertable'
 COMMIT;
 ```
 
@@ -323,7 +323,7 @@ Perform the changes in separate transactions.
 ```sql
 -- migrations/001.sql
 BEGIN;
-ALTER TABLE pgcheck ADD COLUMN value text;
+ALTER TABLE pgvet ADD COLUMN value text;
 COMMIT;
 
 BEGIN;
@@ -344,7 +344,7 @@ Creating an object might fail if it already exists, making the migration non ide
 Use the `IF NOT EXISTS` option:
 
 ```sql
-CREATE TABLE IF NOT EXISTS pgcheck (id text PRIMARY KEY);
+CREATE TABLE IF NOT EXISTS pgvet (id text PRIMARY KEY);
 ```
 
 ***
@@ -363,7 +363,7 @@ The referenced column is often used in joins and lookups, and thus can benefit f
 Create an index for the referenced column:
 
 ```sql
-CREATE INDEX CONCURRENTLY IF NOT EXISTS pgcheck_idx ON pgcheck(reference);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS pgvet_idx ON pgvet(reference);
 ```
 
 # Further reading

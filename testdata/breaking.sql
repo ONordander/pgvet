@@ -1,19 +1,19 @@
-ALTER TABLE pgcheck DROP COLUMN value;
+ALTER TABLE pgvet DROP COLUMN value;
 
--- pgcheck_nolint:drop-column
-ALTER TABLE pgcheck DROP COLUMN nolint;
+-- pgvet_nolint:drop-column
+ALTER TABLE pgvet DROP COLUMN nolint;
 
-ALTER TABLE pgcheck RENAME column oldvalue TO newvalue;
+ALTER TABLE pgvet RENAME column oldvalue TO newvalue;
 
--- pgcheck_nolint:rename-column safe: has been removed
-ALTER TABLE pgcheck RENAME column oldvalue TO newvalue;
+-- pgvet_nolint:rename-column safe: has been removed
+ALTER TABLE pgvet RENAME column oldvalue TO newvalue;
 
-DROP TABLE pgcheck;
+DROP TABLE pgvet;
 
--- pgcheck_nolint:drop-table
-DROP TABLE pgcheck;
+-- pgvet_nolint:drop-table
+DROP TABLE pgvet;
 
-ALTER TABLE pgcheck ALTER COLUMN value TYPE text;
+ALTER TABLE pgvet ALTER COLUMN value TYPE text;
 
--- pgcheck_nolint:change-column-type
-ALTER TABLE pgcheck ALTER COLUMN value TYPE text;
+-- pgvet_nolint:change-column-type
+ALTER TABLE pgvet ALTER COLUMN value TYPE text;

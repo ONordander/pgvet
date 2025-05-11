@@ -1,9 +1,9 @@
 [1;31madd-non-null-column[0m: testdata/with-config.sql:3
 
-  3 | ALTER TABLE pgcheck ADD COLUMN value text NOT NULL
+  3 | ALTER TABLE pgvet ADD COLUMN value text NOT NULL
 
   [1mViolation[0m: Adding a non-nullable column without a default will fail if the table is populated
   [1mSolution[0m: Make the column nullable or add a default
-  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#add-non-null-column
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#add-non-null-column
 ........................................................................................................................
 

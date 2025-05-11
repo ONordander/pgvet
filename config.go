@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/onordander/pgcheck/rules"
+	"github.com/onordander/pgvet/rules"
 
 	"github.com/goccy/go-yaml"
 )

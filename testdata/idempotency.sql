@@ -1,14 +1,14 @@
-CREATE TABLE pgcheck (id text PRIMARY KEY);
+CREATE TABLE pgvet (id text PRIMARY KEY);
 
--- pgcheck_nolint:missing-if-not-exists
-CREATE TABLE pgcheck (id text PRIMARY KEY);
+-- pgvet_nolint:missing-if-not-exists
+CREATE TABLE pgvet (id text PRIMARY KEY);
 
-CREATE TABLE IF NOT EXISTS pgcheck (id text PRIMARY KEY);
+CREATE TABLE IF NOT EXISTS pgvet (id text PRIMARY KEY);
 
-CREATE INDEX CONCURRENTLY pgcheck_idx ON pgcheck(id);
+CREATE INDEX CONCURRENTLY pgvet_idx ON pgvet(id);
 
--- pgcheck_nolint:missing-if-not-exists
-CREATE INDEX CONCURRENTLY pgcheck_idx ON pgcheck(id);
+-- pgvet_nolint:missing-if-not-exists
+CREATE INDEX CONCURRENTLY pgvet_idx ON pgvet(id);
 
 -- index without name should succeed
-CREATE INDEX CONCURRENTLY ON pgcheck(id);
+CREATE INDEX CONCURRENTLY ON pgvet(id);

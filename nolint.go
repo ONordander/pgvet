@@ -4,10 +4,10 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/onordander/pgcheck/rules"
+	"github.com/onordander/pgvet/rules"
 )
 
-const marker = "-- pgcheck_nolint:"
+const marker = "-- pgvet_nolint:"
 
 func filterNoLints(rawQuery string, results []rules.Result) []rules.Result {
 	var filtered []rules.Result

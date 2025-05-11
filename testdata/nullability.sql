@@ -1,18 +1,18 @@
-ALTER TABLE pgcheck ADD COLUMN value text NOT NULL;
+ALTER TABLE pgvet ADD COLUMN value text NOT NULL;
 
--- pgcheck_nolint:add-non-null-column
-ALTER TABLE pgcheck ADD COLUMN value text NOT NULL;
+-- pgvet_nolint:add-non-null-column
+ALTER TABLE pgvet ADD COLUMN value text NOT NULL;
 
-ALTER TABLE pgcheck ALTER COLUMN nullvalue SET NOT NULL;
+ALTER TABLE pgvet ALTER COLUMN nullvalue SET NOT NULL;
 
--- pgcheck_nolint:set-non-null-column
-ALTER TABLE pgcheck ALTER COLUMN nullvalue SET NOT NULL;
+-- pgvet_nolint:set-non-null-column
+ALTER TABLE pgvet ALTER COLUMN nullvalue SET NOT NULL;
 
-ALTER TABLE pgcheck
+ALTER TABLE pgvet
   ALTER COLUMN nullvalue SET NOT NULL,
   ADD COLUMN nonnull text NOT NULL;
 
--- pgcheck_nolint:set-non-null-column,add-non-null-column
-ALTER TABLE pgcheck
+-- pgvet_nolint:set-non-null-column,add-non-null-column
+ALTER TABLE pgvet
   ALTER COLUMN nullvalue SET NOT NULL,
   ADD COLUMN nonnull text NOT NULL;

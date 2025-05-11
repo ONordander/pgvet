@@ -5,13 +5,13 @@
 
 
 
-ALTER TABLE pgcheck DROP COLUMN value;
--- pgcheck_nolint:rename-column
-ALTER TABLE pgcheck
+ALTER TABLE pgvet DROP COLUMN value;
+-- pgvet_nolint:rename-column
+ALTER TABLE pgvet
   RENAME COLUMN value
   TO newvalue;
 
-ALTER TABLE pgcheck
+ALTER TABLE pgvet
   RENAME COLUMN
   value
   TO

@@ -3,19 +3,19 @@ BEGIN;
 --
 -- rule: non-concurrent-index
 --
-CREATE INDEX IF NOT EXISTS pgcheck_idx ON pgcheck(value);
+CREATE INDEX IF NOT EXISTS pgvet_idx ON pgvet(value);
 
--- pgcheck_nolint:non-concurrent-index
-CREATE INDEX IF NOT EXISTS pgcheck_idx ON pgcheck(value);
+-- pgvet_nolint:non-concurrent-index
+CREATE INDEX IF NOT EXISTS pgvet_idx ON pgvet(value);
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS pgcheck_idx ON pgcheck(value);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS pgvet_idx ON pgvet(value);
 
-DROP INDEX pgcheck_idx;
+DROP INDEX pgvet_idx;
  
--- pgcheck_nolint:non-concurrent-index
-DROP INDEX pgcheck_idx;
+-- pgvet_nolint:non-concurrent-index
+DROP INDEX pgvet_idx;
 
-DROP INDEX CONCURRENTLY pgcheck_idx;
+DROP INDEX CONCURRENTLY pgvet_idx;
 
 COMMIT;
 
@@ -25,15 +25,15 @@ COMMIT;
 
 BEGIN;
 
-ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);
+ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);
 
--- pgcheck_nolint:constraint-excessive-lock
-ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);
+-- pgvet_nolint:constraint-excessive-lock
+ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);
 
-ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;
+ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;
 
 -- Add index to not violate missing-foreign-key-index
-CREATE INDEX CONCURRENTLY ON pgcheck(reference);
+CREATE INDEX CONCURRENTLY ON pgvet(reference);
 
 COMMIT;
 
@@ -45,7 +45,7 @@ BEGIN;
 ALTER TABLE firsttable ADD COLUMN value text;
 ALTER TABLE secondtable ADD COLUMN value text;
 
--- pgcheck_nolint:multiple-locks
+-- pgvet_nolint:multiple-locks
 ALTER TABLE thirdtable ADD COLUMN value text;
 
 COMMIT;

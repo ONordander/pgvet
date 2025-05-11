@@ -8,7 +8,7 @@ var idempotencyRules = []Rule{
 	{
 		Code:     "missing-if-not-exists",
 		Slug:     "Creating an object might fail if it already exists, making the migration non idempotent",
-		Help:     "Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgcheck ...",
+		Help:     "Wrap the create statements with guards; e.g. CREATE TABLE IF NOT EXISTS pgvet ...",
 		Fn:       missingIfNotExists,
 		Category: idempotency,
 	},

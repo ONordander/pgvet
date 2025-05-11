@@ -1,3 +1,3 @@
-CREATE INDEX CONCURRENTLY pgcheck_idx ON pgcheck(id);
+CREATE INDEX CONCURRENTLY pgvet_idx ON pgvet(id);
 
-ALTER TABLE pgcheck ADD COLUMN value text NOT NULL;
+ALTER TABLE pgvet ADD COLUMN value text NOT NULL;

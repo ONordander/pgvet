@@ -1,6 +1,6 @@
 [1;31mmissing-foreign-key-index[0m: testdata/miscellaneous.sql:1
 
-  1 | CREATE TABLE IF NOT EXISTS pgcheck (
+  1 | CREATE TABLE IF NOT EXISTS pgvet (
   2 |   id text PRIMARY KEY,
   3 |   reference text REFERENCES parent(id),
   4 |   other_reference text REFERENCES parent(id)
@@ -8,6 +8,6 @@
 
   [1mViolation[0m: PostgreSQL does not create an automatic index for foreign key constraints.
   [1mSolution[0m: Add an index for the foreign key constraint column
-  [1mExplanation[0m: https://github.com/ONordander/pgcheck?tab=readme-ov-file#missing-foreign-key-index
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#missing-foreign-key-index
 ........................................................................................................................
 

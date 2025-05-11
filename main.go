@@ -12,7 +12,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/onordander/pgcheck/rules"
+	"github.com/onordander/pgvet/rules"
 
 	pgquery "github.com/wasilibs/go-pgquery"
 )
@@ -38,13 +38,13 @@ func main() {
 	config := flagSet.String("config", "", "Config file")
 	flagSet.Usage = func() {
 		fmt.Fprint(wErr, "Usage:\n")
-		fmt.Fprint(wErr, "\t./pgcheck lint [--config <config.yaml>] <filepattern>...\n")
-		fmt.Fprint(wErr, "\t./pgcheck --help\n")
-		fmt.Fprint(wErr, "\t./pgcheck version\n")
-		fmt.Fprint(wErr, "\t./pgcheck license\n")
+		fmt.Fprint(wErr, "\t./pgvet lint [--config <config.yaml>] <filepattern>...\n")
+		fmt.Fprint(wErr, "\t./pgvet --help\n")
+		fmt.Fprint(wErr, "\t./pgvet version\n")
+		fmt.Fprint(wErr, "\t./pgvet license\n")
 		flagSet.PrintDefaults()
 		fmt.Fprint(wErr, "Example:\n")
-		fmt.Fprint(wErr, "\t./pgcheck lint --config=config.yaml migrations/*.sql\n")
+		fmt.Fprint(wErr, "\t./pgvet lint --config=config.yaml migrations/*.sql\n")
 	}
 
 	if len(os.Args) < 2 {
@@ -57,7 +57,7 @@ func main() {
 		fmt.Fprint(wOut, notice)
 		return
 	case "version":
-		fmt.Fprintf(wOut, "pgcheck %s\n", strings.TrimSpace(version))
+		fmt.Fprintf(wOut, "pgvet %s\n", strings.TrimSpace(version))
 		return
 	case "rules":
 		for _, rule := range rules.AllRules() {
@@ -69,7 +69,7 @@ func main() {
 			fmt.Fprintf(wOut, "\t| %s%s%s\n", bold, rule.Slug, normal)
 			fmt.Fprintf(wOut, "\tHelp: %s\n", rule.Help)
 			fmt.Fprintf(wOut, "\tEnabled by default: %s\n", enabled)
-			fmt.Fprintf(wOut, "\tExplanation: https://github.com/ONordander/pgcheck?tab=readme-ov-file#%s\n", rule.Code)
+			fmt.Fprintf(wOut, "\tExplanation: https://github.com/ONordander/pgvet?tab=readme-ov-file#%s\n", rule.Code)
 			fmt.Fprintf(wOut, "\tCategory: %s\n\n", rule.Category)
 		}
 	case "lint":
@@ -84,7 +84,7 @@ func main() {
 			configpath = config
 		}
 
-		// Multi args to allow usage where the shell expands wildcards like: ./pgcheck migrations/*.sql
+		// Multi args to allow usage where the shell expands wildcards like: ./pgvet migrations/*.sql
 		patterns := flagSet.Args()[0:]
 
 		os.Exit(lint(wOut, wErr, patterns, configpath, *format, *exitStatusOnViolations))

@@ -15,7 +15,7 @@ func TestFilterStatements(t *testing.T) {
 	t.Run("Should find single statement", func(t *testing.T) {
 		t.Parallel()
 
-		tree := mustParse(t, "ALTER TABLE pgcheck ADD COLUMN id INTEGER;")
+		tree := mustParse(t, "ALTER TABLE pgvet ADD COLUMN id INTEGER;")
 		require.Len(t, tree.Stmts, 1)
 
 		filtered := FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts)
@@ -27,8 +27,8 @@ func TestFilterStatements(t *testing.T) {
 		t.Parallel()
 
 		var b strings.Builder
-		b.WriteString("ALTER TABLE pgcheck ADD COLUMN id INTEGER;")
-		b.WriteString("ALTER TABLE pgcheck DROP COLUMN id;")
+		b.WriteString("ALTER TABLE pgvet ADD COLUMN id INTEGER;")
+		b.WriteString("ALTER TABLE pgvet DROP COLUMN id;")
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 2)
 
@@ -43,9 +43,9 @@ func TestFilterStatements(t *testing.T) {
 		t.Parallel()
 
 		var b strings.Builder
-		b.WriteString("CREATE INDEX ON pgcheck (id);")
-		b.WriteString("ALTER TABLE pgcheck DROP COLUMN id;")
-		b.WriteString("CREATE TABLE pgcheck2 (id INTEGER);")
+		b.WriteString("CREATE INDEX ON pgvet (id);")
+		b.WriteString("ALTER TABLE pgvet DROP COLUMN id;")
+		b.WriteString("CREATE TABLE pgvet2 (id INTEGER);")
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 

@@ -1,13 +1,13 @@
-CREATE TABLE IF NOT EXISTS pgcheck (
+CREATE TABLE IF NOT EXISTS pgvet (
   id text PRIMARY KEY,
   reference text REFERENCES parent(id),
   other_reference text REFERENCES parent(id)
 );
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS ref_fk ON pgcheck(reference);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ref_fk ON pgvet(reference);
 
--- pgcheck_nolint:missing-foreign-key-index
-CREATE TABLE IF NOT EXISTS pgcheck_two (
+-- pgvet_nolint:missing-foreign-key-index
+CREATE TABLE IF NOT EXISTS pgvet_two (
   id text PRIMARY KEY,
   reference text REFERENCES parent(id),
   other_reference text REFERENCES parent(id)

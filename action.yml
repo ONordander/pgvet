@@ -1,7 +1,7 @@
 ---
-name: "pgcheck"
+name: "pgvet"
 author: "@ONordander"
-description: "A Github action to run the PostgreSQL migration linter 'pgcheck'"
+description: "A Github action to run the PostgreSQL migration linter 'pgvet'"
 inputs:
   pattern:
     description: "File pattern for migrations. E.g. './migrations/*.sql'"

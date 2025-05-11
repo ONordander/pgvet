@@ -20,7 +20,7 @@ func TestDropColumn(t *testing.T) {
 	t.Run("Should find violation", func(t *testing.T) {
 		t.Parallel()
 
-		tree := mustParse(t, "ALTER TABLE pgcheck DROP COLUMN value;")
+		tree := mustParse(t, "ALTER TABLE pgvet DROP COLUMN value;")
 		require.Len(t, tree.Stmts, 1)
 
 		res, err := dropColumn(tree, testCode, testSlug, testHelp)
@@ -38,9 +38,9 @@ func TestDropColumn(t *testing.T) {
 		t.Parallel()
 
 		var b strings.Builder
-		b.WriteString("ALTER TABLE pgcheck DROP COLUMN value;\n")
-		b.WriteString("ALTER TABLE pgcheck RENAME COLUMN value TO new_value;\n")
-		b.WriteString("ALTER TABLE pgcheck DROP COLUMN fk;\n")
+		b.WriteString("ALTER TABLE pgvet DROP COLUMN value;\n")
+		b.WriteString("ALTER TABLE pgvet RENAME COLUMN value TO new_value;\n")
+		b.WriteString("ALTER TABLE pgvet DROP COLUMN fk;\n")
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
@@ -49,16 +49,16 @@ func TestDropColumn(t *testing.T) {
 		require.Len(t, res, 2)
 
 		assert.EqualValues(t, 0, res[0].StmtStart)
-		assert.EqualValues(t, 92, res[1].StmtStart)
+		assert.EqualValues(t, 88, res[1].StmtStart)
 	})
 
 	t.Run("Should find no violations", func(t *testing.T) {
 		t.Parallel()
 
 		var b strings.Builder
-		b.WriteString("CREATE INDEX CONCURRENTLY on pgcheck (id);\n")
-		b.WriteString("ALTER TABLE pgcheck RENAME COLUMN value TO value2;\n")
-		b.WriteString("DROP INDEX pgcheck_idx;")
+		b.WriteString("CREATE INDEX CONCURRENTLY on pgvet (id);\n")
+		b.WriteString("ALTER TABLE pgvet RENAME COLUMN value TO value2;\n")
+		b.WriteString("DROP INDEX pgvet_idx;")
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
@@ -74,7 +74,7 @@ func TestDropTable(t *testing.T) {
 	t.Run("Should find violation", func(t *testing.T) {
 		t.Parallel()
 
-		tree := mustParse(t, "DROP TABLE pgcheck;")
+		tree := mustParse(t, "DROP TABLE pgvet;")
 		require.Len(t, tree.Stmts, 1)
 
 		res, err := dropTable(tree, testCode, testSlug, testHelp)
@@ -92,9 +92,9 @@ func TestDropTable(t *testing.T) {
 		t.Parallel()
 
 		var b strings.Builder
-		b.WriteString("DROP TABLE pgcheck;\n")
-		b.WriteString("ALTER TABLE pgcheck RENAME COLUMN value TO new_value;\n")
-		b.WriteString("DROP TABLE pgcheck_two;\n")
+		b.WriteString("DROP TABLE pgvet;\n")
+		b.WriteString("ALTER TABLE pgvet RENAME COLUMN value TO new_value;\n")
+		b.WriteString("DROP TABLE pgvet_two;\n")
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
@@ -103,7 +103,7 @@ func TestDropTable(t *testing.T) {
 		require.Len(t, res, 2)
 
 		assert.EqualValues(t, 0, res[0].StmtStart)
-		assert.EqualValues(t, 73, res[1].StmtStart)
+		assert.EqualValues(t, 69, res[1].StmtStart)
 	})
 }
 
@@ -113,7 +113,7 @@ func TestRenameColumn(t *testing.T) {
 	t.Run("Should find violation", func(t *testing.T) {
 		t.Parallel()
 
-		tree := mustParse(t, "ALTER TABLE pgcheck RENAME COLUMN value TO value2;")
+		tree := mustParse(t, "ALTER TABLE pgvet RENAME COLUMN value TO value2;")
 		require.Len(t, tree.Stmts, 1)
 
 		res, err := renameColumn(tree, testCode, testSlug, testHelp)
@@ -131,9 +131,9 @@ func TestRenameColumn(t *testing.T) {
 		t.Parallel()
 
 		var b strings.Builder
-		b.WriteString("CREATE INDEX CONCURRENTLY on pgcheck (id);\n")
-		b.WriteString("ALTER TABLE pgcheck RENAME COLUMN value TO value2;\n")
-		b.WriteString("ALTER TABLE pgcheck RENAME COLUMN id TO id_new;")
+		b.WriteString("CREATE INDEX CONCURRENTLY on pgvet (id);\n")
+		b.WriteString("ALTER TABLE pgvet RENAME COLUMN value TO value2;\n")
+		b.WriteString("ALTER TABLE pgvet RENAME COLUMN id TO id_new;")
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
@@ -141,8 +141,8 @@ func TestRenameColumn(t *testing.T) {
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
-		assert.EqualValues(t, 42, res[0].StmtStart)
-		assert.EqualValues(t, 93, res[1].StmtStart)
+		assert.EqualValues(t, 40, res[0].StmtStart)
+		assert.EqualValues(t, 89, res[1].StmtStart)
 	})
 }
 
@@ -152,7 +152,7 @@ func TestChangeColumnType(t *testing.T) {
 	t.Run("Should find violation", func(t *testing.T) {
 		t.Parallel()
 
-		tree := mustParse(t, "ALTER TABLE pgcheck ALTER COLUMN value TYPE text;")
+		tree := mustParse(t, "ALTER TABLE pgvet ALTER COLUMN value TYPE text;")
 		require.Len(t, tree.Stmts, 1)
 
 		res, err := changeColumnType(tree, testCode, testSlug, testHelp)
@@ -170,9 +170,9 @@ func TestChangeColumnType(t *testing.T) {
 		t.Parallel()
 
 		var b strings.Builder
-		b.WriteString("ALTER TABLE pgcheck ALTER COLUMN value TYPE text;\n")
-		b.WriteString("ALTER TABLE pgcheck RENAME COLUMN value TO value2;\n")
-		b.WriteString("ALTER TABLE pgcheck ALTER COLUMN value TYPE varchar(36);\n")
+		b.WriteString("ALTER TABLE pgvet ALTER COLUMN value TYPE text;\n")
+		b.WriteString("ALTER TABLE pgvet RENAME COLUMN value TO value2;\n")
+		b.WriteString("ALTER TABLE pgvet ALTER COLUMN value TYPE varchar(36);\n")
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
@@ -181,6 +181,6 @@ func TestChangeColumnType(t *testing.T) {
 		require.Len(t, res, 2)
 
 		assert.EqualValues(t, 0, res[0].StmtStart)
-		assert.EqualValues(t, 100, res[1].StmtStart)
+		assert.EqualValues(t, 96, res[1].StmtStart)
 	})
 }

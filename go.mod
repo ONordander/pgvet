@@ -1,4 +1,4 @@
-module github.com/onordander/pgcheck
+module github.com/onordander/pgvet
 
 go 1.24
 
