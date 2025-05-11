@@ -27,7 +27,7 @@ jobs:
     - name: Test
       run: go test ./...
 
-    - name: pgcheck
+    - name: pgvet
       uses: ./
       with:
         pattern: "./testdata/noerrors.sql"

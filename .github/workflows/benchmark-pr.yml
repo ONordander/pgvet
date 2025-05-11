@@ -25,7 +25,7 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           --jq '.artifacts[0].workflow_run.id' \
-          "/repos/ONordander/pgcheck/actions/artifacts?name=benchmark.main.out")
+          "/repos/ONordander/pgvet/actions/artifacts?name=benchmark.main.out")
         echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
 
     - name: Download previous benchmark

@@ -1,19 +1,19 @@
-# pgvet
+# pgvet 🛡️
 
 pgvet is a database migration linter for [PostgreSQL](https://www.postgresql.org/).
 
-Used to avoid problematic migrations and application downtime by detecting:
+Avoid problematic migrations and application downtime by detecting:
 
 - Failing changes
 - Non backwards compatible changes
 - Migrations that use excessive locking or risk deadlocks
 - Non idempotent changes
 
-Available as a installed binary and as a [Github Action](#github-action)
+Available as binary and as a [Github Action](#github-action)
 
 # Installation
 
-Prebuilt binaries are available under [releases](https://github.com/onordander/pgvet/releases)
+Prebuilt binaries for Linux, macOS, and Windows are available under [releases](https://github.com/onordander/pgvet/releases)
 
 Installing with Golang is also possible:
 
@@ -23,13 +23,14 @@ CGO_ENABLED=0 go install github.com/onordander/pgvet@latest
 
 ## Github action
 
-```
+```yaml
 steps:
 - name: pgvet
   uses: onordander/pgvet@v0.1.0
   with:
     pattern: "./migrations/*.sql"
-    config: "./pgvet-config.yaml"
+    config: "./pgvet.yaml"
+```
 
 # Usage
 
@@ -155,6 +156,12 @@ Enabled by default: ✓
 
 Dropping a column is not backwards compatible and may break existing clients that depend on the column.
 
+**Violation:**
+
+```sql
+ALTER TABLE pgvet DROP COLUMN id;
+```
+
 **Solution**:
 
 1. Update the application code to no longer use the column
@@ -168,6 +175,12 @@ Enabled by default: ✓
 
 Dropping a table is not backwards compatible and may break existing clients that depend on the table.
 
+**Violation:**
+
+```sql
+DROP TABLE pgvet;
+```
+
 **Solution**:
 
 1. Update the application code to no longer use the table
@@ -180,6 +193,12 @@ Dropping a table is not backwards compatible and may break existing clients that
 Enabled by default: ✓
 
 Renaming a column is not backwards compatible and may break existing clients that depend on the old column name.
+
+**Violation:**
+
+```sql
+ALTER TABLE pgvet RENAME name TO reference;
+```
 
 **Solution**:
 
@@ -215,6 +234,12 @@ Enabled by default: ✓
 
 Adding a non-nullable column without a default will fail if the table is populated.
 
+**Violation:**
+
+```sql
+ALTER TABLE pgcheck ADD COLUMN value NOT NULL;
+```
+
 **Solution**:
 
 *Option 1*: make the column nullable:
@@ -235,6 +260,12 @@ ALTER TABLE pgvet ADD COLUMN value text DEFAULT '1';
 Enabled by default: ✓
 
 Altering a column to be non-nullable might fail if the column contains null values.
+
+**Violation:**
+
+```sql
+ALTER TABLE pgvet ALTER COLUMN value SET NOT NULL;
+```
 
 **Solution**:
 
@@ -257,12 +288,18 @@ Creating an index non-concurrently acquires a lock on the table that block write
 
 See: [Postgres - explicit locking](https://www.postgresql.org/docs/current/explicit-locking.html) (ShareLock)
 
+**Violation:**
+
+```sql
+CREATE INDEX IF NOT EXISTS pgvet_value_idx ON pgvet(value);
+```
+
 **Solution**:
 
 Use the `CONCURRENTLY` option:
 
 ```sql
-CREATE INDEX CONCURRENTLY pgvet_value_idx ON pgvet(value);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS pgvet_value_idx ON pgvet(value);
 ```
 
 *Note*: this cannot be done inside a transaction.
@@ -277,6 +314,12 @@ Adding a constraint acquires a lock blocking any writes (and potential reads) du
 Further, if the constraint is a foreign key reference it acquires a lock on both tables.
 
 See [Postgres - add table constraint](https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-DESC-ADD-TABLE-CONSTRAINT)
+
+**Violation:**
+
+```sql
+ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);
+```
 
 **Solution**:
 
@@ -295,7 +338,7 @@ Enabled by default: 🗙
 
 Experimental: acquiring multiple locks in a single transaction can cause a deadlock if an application contends with the locks in a different order.
 
-Example:
+**Violation:**
 
 ```sql
 -- migrations/001.sql
@@ -339,6 +382,12 @@ Enabled by default: ✓
 
 Creating an object might fail if it already exists, making the migration non idempotent.
 
+**Violation:**
+
+```sql
+CREATE TABLE pgcheck (id text PRIMARY KEY);
+```
+
 **Solution**:
 
 Use the `IF NOT EXISTS` option:
@@ -357,6 +406,17 @@ Enabled by default: ✓
 
 When adding a foreign key constraint PostgreSQL will not automatically create an index for you.\
 The referenced column is often used in joins and lookups, and thus can benefit from an index.
+
+**Violation:**
+
+```sql
+CREATE TABLE IF NOT EXISTS pgvet (
+  id text PRIMARY KEY,
+  reference text REFERENCES parent(id),
+  other_reference text REFERENCES parent(id)
+);
+-- end of migration
+```
 
 **Solution**:
 
