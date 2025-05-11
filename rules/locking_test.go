@@ -142,7 +142,7 @@ func TestConstraintKeyExcessiveLock(t *testing.T) {
 	})
 }
 
-func TestManyAlterTable(t *testing.T) {
+func TestMultipleLocks(t *testing.T) {
 	t.Parallel()
 
 	t.Run("Should find single violation", func(t *testing.T) {
@@ -156,7 +156,7 @@ func TestManyAlterTable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 4)
 
-		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -179,7 +179,7 @@ func TestManyAlterTable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 5)
 
-		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -197,7 +197,7 @@ func TestManyAlterTable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
 		assert.Len(t, res, 1)
 	})
@@ -215,7 +215,7 @@ func TestManyAlterTable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 6)
 
-		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -232,7 +232,7 @@ func TestManyAlterTable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 5)
 
-		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -250,7 +250,7 @@ func TestManyAlterTable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 6)
 
-		res, err := manyAlterTable(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})

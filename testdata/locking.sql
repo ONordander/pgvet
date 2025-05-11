@@ -38,14 +38,14 @@ CREATE INDEX CONCURRENTLY ON pgcheck(reference);
 COMMIT;
 
 --
--- rule: many-alter-table
+-- rule: multiple-locks
 --
 
 BEGIN;
 ALTER TABLE firsttable ADD COLUMN value text;
 ALTER TABLE secondtable ADD COLUMN value text;
 
--- pgcheck_nolint:many-alter-table
+-- pgcheck_nolint:multiple-locks
 ALTER TABLE thirdtable ADD COLUMN value text;
 
 COMMIT;

@@ -20,10 +20,10 @@ var lockingRules = []Rule{
 		Category: locking,
 	},
 	{
-		Code:              "many-alter-table",
-		Slug:              "Experimental: altering multiple tables in a single transaction can cause a deadlock",
+		Code:              "multiple-locks",
+		Slug:              "Experimental: acquiring multiple locks in a single transaction can cause a deadlock",
 		Help:              "Perform the changes in separate transactions",
-		Fn:                manyAlterTable,
+		Fn:                multipleLocks,
 		Category:          locking,
 		DisabledByDefault: true,
 	},
@@ -91,7 +91,7 @@ func constraintExcessiveLock(tree *pgquery.ParseResult, code Code, slug, help st
 	return results, nil
 }
 
-func manyAlterTable(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func multipleLocks(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
 	var results []Result
 
 	tracker := newTracker()

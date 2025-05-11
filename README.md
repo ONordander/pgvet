@@ -131,8 +131,8 @@ For examples see `./testdata`.
 | [set-non-null-column](#set-non-null-column)                       | nullability   | ✓  |
 | [non-concurrent-index](#non-concurrent-index)                     | locking       | ✓  |
 | [constraint-excessive-lock](#constraint-excessive-lock)           | locking       | ✓  |
-| [many-alter-table](#many-alter-table)                             | locking       | 🗙  |
-| [missing-if-not-exists](#missing-if-not-exists) | idempotency   | ✓  |
+| [multiple-locks](#multiple-locks)                                 | locking       | 🗙  |
+| [missing-if-not-exists](#missing-if-not-exists)                   | idempotency   | ✓  |
 | [missing-foreign-key-index](#missing-foreign-key-index)           | miscellaneous | 🗙  |
 
 ## Breaking changes
@@ -276,11 +276,11 @@ See [Postgres - add table constraint](https://www.postgresql.org/docs/current/sq
     ALTER TABLE pgcheck VALIDATE CONSTRAINT reference_fk;
     ```
 
-### many-alter-table
+### multiple-locks
 
 Enabled by default: 🗙
 
-Experimental: altering multiple tables in a single transaction can cause a deadlock if an application locks the same tables in a different order.
+Experimental: acquiring multiple locks in a single transaction can cause a deadlock if an application contends with the locks in a different order.
 
 Example:
 
