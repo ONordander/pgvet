@@ -2,12 +2,14 @@
 
 pgcheck is a database migration linter for [PostgreSQL](https://www.postgresql.org/).
 
-It aims to aid in writing migrations according to best practices and detect:
+Used to avoid problematic migrations and application downtime by detecting:
 
 - Failing changes
 - Non backwards compatible changes
 - Migrations that use excessive locking or risk deadlocks
 - Non idempotent changes
+
+Available as a installed binary and as a [Github Action](#github-action)
 
 # Installation
 
@@ -18,6 +20,16 @@ Installing with Golang is also possible:
 ```shell
 CGO_ENABLED=0 go install github.com/onordander/pgcheck@latest
 ```
+
+## Github action
+
+```
+steps:
+- name: pgcheck
+  uses: onordander/pgcheck@v0.1.0
+  with:
+    pattern: "./migrations/*.sql"
+    config: "./pgcheck-config.yaml"
 
 # Usage
 
@@ -226,6 +238,7 @@ Altering a column to be non-nullable might fail if the column contains null valu
 
 **Solution**:
 
+1. Ensure that the application always inserts a value.
 1. Ensure that the column contains no nulls:
     ```sql
     SELECT COUNT(1) FROM pgcheck WHERE value IS NULL;
@@ -271,7 +284,7 @@ See [Postgres - add table constraint](https://www.postgresql.org/docs/current/sq
     ```sql
     ALTER TABLE pgcheck ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;
     ```
-1. Validate the constraint in a subsequent transaction. This acquires a more relaxed lock that that does not block reads or writes.
+1. Validate the constraint in a subsequent transaction. This acquires a more relaxed lock that doesn't block reads or writes.
     ```sql
     ALTER TABLE pgcheck VALIDATE CONSTRAINT reference_fk;
     ```
