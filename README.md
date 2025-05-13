@@ -9,6 +9,8 @@ Avoid problematic migrations and application downtime by detecting:
 - Migrations that use excessive locking or risk deadlocks
 - Non idempotent changes
 
+![Recording](docs/pgvet.gif)
+
 Available as binary and as a [Github Action](#github-action)
 
 # Installation
