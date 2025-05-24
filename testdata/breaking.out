@@ -1,6 +1,6 @@
 [1;31mdrop-column[0m: testdata/breaking.sql:1
 
-  1 | ALTER TABLE pgvet DROP COLUMN value
+  1 | ALTER TABLE pgvet DROP COLUMN IF EXISTS value
 
   [1mViolation[0m: Dropping a column is not backwards compatible and may break existing clients
   [1mSolution[0m: Update the application code to no longer use the column before applying the change
@@ -18,7 +18,7 @@
 
 [1;31mdrop-table[0m: testdata/breaking.sql:11
 
-  11 | DROP TABLE pgvet
+  11 | DROP TABLE IF EXISTS pgvet
 
   [1mViolation[0m: Dropping a table is not backwards compatible and may break existing clients
   [1mSolution[0m: Update the application code to no longer use the table before applying the change

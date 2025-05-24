@@ -12,7 +12,7 @@
 
 [1;31mnon-concurrent-index[0m: testdata/locking.sql:13
 
-  13 | DROP INDEX pgvet_idx
+  13 | DROP INDEX IF EXISTS pgvet_idx
 
   [1mViolation[0m: Creating/dropping an index non-concurrently acquires a lock on the table that block writes for the duration of the operation
   [1mSolution[0m: Create/drop the index concurrently using the `CONCURRENTLY` option to avoid blocking. Note: this cannot be done inside a transaction

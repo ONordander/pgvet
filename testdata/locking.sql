@@ -10,12 +10,12 @@ CREATE INDEX IF NOT EXISTS pgvet_idx ON pgvet(value);
 
 CREATE INDEX CONCURRENTLY IF NOT EXISTS pgvet_idx ON pgvet(value);
 
-DROP INDEX pgvet_idx;
+DROP INDEX IF EXISTS pgvet_idx;
  
 -- pgvet_nolint:non-concurrent-index
-DROP INDEX pgvet_idx;
+DROP INDEX IF EXISTS pgvet_idx;
 
-DROP INDEX CONCURRENTLY pgvet_idx;
+DROP INDEX CONCURRENTLY IF EXISTS pgvet_idx;
 
 COMMIT;
 

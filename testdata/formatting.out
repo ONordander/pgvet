@@ -4,7 +4,7 @@
   5 | 
   6 | 
   7 | 
-  8 | ALTER TABLE pgvet DROP COLUMN value
+  8 | ALTER TABLE pgvet DROP COLUMN IF EXISTS value
 
   [1mViolation[0m: Dropping a column is not backwards compatible and may break existing clients
   [1mSolution[0m: Update the application code to no longer use the column before applying the change

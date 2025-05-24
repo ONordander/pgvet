@@ -25,3 +25,32 @@
   [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#missing-if-not-exists
 ........................................................................................................................
 
+[1;31mmissing-if-exists[0m: testdata/idempotency.sql:21
+
+  21 | -- pgvet_nolint:drop-table
+  22 | DROP TABLE pgvet
+
+  [1mViolation[0m: Dropping an object/relation might fail if it doesn't exist, making the migration non idempotent
+  [1mSolution[0m: Wrap the statements with guards; e.g. DROP INDEX CONCURRENTLY IF EXISTS pgvet_idx
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#missing-if-exists
+........................................................................................................................
+
+[1;31mmissing-if-exists[0m: testdata/idempotency.sql:26
+
+  26 | DROP INDEX CONCURRENTLY pgvet_idx
+
+  [1mViolation[0m: Dropping an object/relation might fail if it doesn't exist, making the migration non idempotent
+  [1mSolution[0m: Wrap the statements with guards; e.g. DROP INDEX CONCURRENTLY IF EXISTS pgvet_idx
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#missing-if-exists
+........................................................................................................................
+
+[1;31mmissing-if-exists[0m: testdata/idempotency.sql:29
+
+  29 | -- pgvet_nolint:drop-column
+  30 | ALTER TABLE pgvet DROP COLUMN id
+
+  [1mViolation[0m: Dropping an object/relation might fail if it doesn't exist, making the migration non idempotent
+  [1mSolution[0m: Wrap the statements with guards; e.g. DROP INDEX CONCURRENTLY IF EXISTS pgvet_idx
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#missing-if-exists
+........................................................................................................................
+

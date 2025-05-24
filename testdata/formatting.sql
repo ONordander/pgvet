@@ -5,7 +5,7 @@
 
 
 
-ALTER TABLE pgvet DROP COLUMN value;
+ALTER TABLE pgvet DROP COLUMN IF EXISTS value;
 -- pgvet_nolint:rename-column
 ALTER TABLE pgvet
   RENAME COLUMN value

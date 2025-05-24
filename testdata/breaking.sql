@@ -1,17 +1,17 @@
-ALTER TABLE pgvet DROP COLUMN value;
+ALTER TABLE pgvet DROP COLUMN IF EXISTS value;
 
 -- pgvet_nolint:drop-column
-ALTER TABLE pgvet DROP COLUMN nolint;
+ALTER TABLE pgvet DROP COLUMN IF EXISTS nolint;
 
 ALTER TABLE pgvet RENAME column oldvalue TO newvalue;
 
 -- pgvet_nolint:rename-column safe: has been removed
 ALTER TABLE pgvet RENAME column oldvalue TO newvalue;
 
-DROP TABLE pgvet;
+DROP TABLE IF EXISTS pgvet;
 
 -- pgvet_nolint:drop-table
-DROP TABLE pgvet;
+DROP TABLE IF EXISTS pgvet;
 
 ALTER TABLE pgvet ALTER COLUMN value TYPE text;
 

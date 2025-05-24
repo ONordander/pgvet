@@ -148,6 +148,7 @@ For examples see `./testdata`.
 | [constraint-excessive-lock](#constraint-excessive-lock)           | locking       | ✓  |
 | [multiple-locks](#multiple-locks)                                 | locking       | 🗙  |
 | [missing-if-not-exists](#missing-if-not-exists)                   | idempotency   | ✓  |
+| [missing-if-exists](#missing-if-exists)                           | idempotency   | ✓  |
 | [missing-foreign-key-index](#missing-foreign-key-index)           | miscellaneous | ✓  |
 
 ## Breaking changes
@@ -399,6 +400,26 @@ CREATE TABLE IF NOT EXISTS pgvet (id text PRIMARY KEY);
 ```
 
 ***
+
+### missing-if-exists
+
+Enabled by default: ✓
+
+Dropping objects/relations might fail if they do not exist, making the migration non idempotent.
+
+**Violation:**
+
+```sql
+DROP INDEX CONCURRENTLY pgvet_idx;
+```
+
+**Solution**:
+
+Use the `IF EXISTS` option:
+
+```sql
+DROP INDEX CONCURRENTLY IF EXISTS pgvet_idx;
+```
 
 ## Miscellaneous
 
