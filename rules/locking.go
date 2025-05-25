@@ -21,7 +21,7 @@ var lockingRules = []Rule{
 	},
 	{
 		Code:              "multiple-locks",
-		Slug:              "Experimental: acquiring multiple locks in a single transaction can cause a deadlock",
+		Slug:              "Experimental: acquiring multiple locks in a single transaction can cause a deadlock. Note: this rule assumes that the migration runs in an implicit transaction.",
 		Help:              "Perform the changes in separate transactions",
 		Fn:                multipleLocks,
 		Category:          locking,

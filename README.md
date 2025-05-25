@@ -339,7 +339,8 @@ ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES
 
 Enabled by default: 🗙
 
-Experimental: acquiring multiple locks in a single transaction can cause a deadlock if an application contends with the locks in a different order.
+Experimental: acquiring multiple locks in a single transaction can cause a deadlock if an application contends with the locks in a different order.\
+Note: this rule assumes that the migrations runs in an implicit transaction.
 
 **Violation:**
 
