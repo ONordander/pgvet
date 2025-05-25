@@ -33,6 +33,11 @@ func (r Report) Serialize(format string) (string, error) {
 		b.WriteString(entry.formatMsg())
 		b.WriteString("\n")
 	}
+	color := red
+	if len(r) == 0 {
+		color = green
+	}
+	b.WriteString(fmt.Sprintf("%s%d violations found%s\n", color, len(r), normal))
 
 	return b.String(), nil
 }
