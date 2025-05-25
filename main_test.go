@@ -27,6 +27,7 @@ func TestLint(t *testing.T) {
 		"idempotency":   {"testdata/idempotency.sql", "testdata/idempotency.out", &configFile},
 		"locking":       {"testdata/locking.sql", "testdata/locking.out", &configFile},
 		"formatting":    {"testdata/formatting.sql", "testdata/formatting.out", &configFile},
+		"types":         {"testdata/types.sql", "testdata/types.out", &configFile},
 		"noerrors":      {"testdata/noerrors.sql", "testdata/noerrors.out", &configFile},
 		"miscellaneous": {"testdata/miscellaneous.sql", "testdata/miscellaneous.out", &configFile},
 		"with-config":   {"testdata/with-config.sql", "testdata/with-config.out", ptr("testdata/with-config.yaml")},

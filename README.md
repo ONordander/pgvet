@@ -136,20 +136,21 @@ add-non-null-column: migration.sql:1
 
 For examples see `./testdata`.
 
-| Rule                           | Category                         | Enabled by default |
-| ------------------------------ | -------------------------------- | ------------------ |
-| [drop-column](#drop-column)                                       | breaking      | ✓  |
-| [drop-table](#drop-table)                                         | breaking      | ✓  |
-| [rename-column](#rename-column)                                   | breaking      | ✓  |
-| [change-column-type](#change-column-type)                         | breaking      | ✓  |
-| [add-non-null-column](#add-non-null-column)                       | nullability   | ✓  |
-| [set-non-null-column](#set-non-null-column)                       | nullability   | ✓  |
-| [non-concurrent-index](#non-concurrent-index)                     | locking       | ✓  |
-| [constraint-excessive-lock](#constraint-excessive-lock)           | locking       | ✓  |
-| [multiple-locks](#multiple-locks)                                 | locking       | 🗙  |
-| [missing-if-not-exists](#missing-if-not-exists)                   | idempotency   | ✓  |
-| [missing-if-exists](#missing-if-exists)                           | idempotency   | ✓  |
-| [missing-foreign-key-index](#missing-foreign-key-index)           | miscellaneous | ✓  |
+| Rule                                                          | Category      | Enabled by default |
+| --------------------------------------------------------------| --------------| ------------------ |
+| [drop-column](#drop-column)                                   | breaking      | ✓                  |
+| [drop-table](#drop-table)                                     | breaking      | ✓                  |
+| [rename-column](#rename-column)                               | breaking      | ✓                  |
+| [change-column-type](#change-column-type)                     | breaking      | ✓                  |
+| [add-non-null-column](#add-non-null-column)                   | nullability   | ✓                  |
+| [set-non-null-column](#set-non-null-column)                   | nullability   | ✓                  |
+| [non-concurrent-index](#non-concurrent-index)                 | locking       | ✓                  |
+| [constraint-excessive-lock](#constraint-excessive-lock)       | locking       | ✓                  |
+| [multiple-locks](#multiple-locks)                             | locking       | 🗙                  |
+| [missing-if-not-exists](#missing-if-not-exists)               | idempotency   | ✓                  |
+| [missing-if-exists](#missing-if-exists)                       | idempotency   | ✓                  |
+| [use-timestamp-with-time-zone](#use-timestamp-with-time-zone) | types         | ✓                  |
+| [missing-foreign-key-index](#missing-foreign-key-index)       | miscellaneous | ✓                  |
 
 ## Breaking changes
 
@@ -422,6 +423,34 @@ Use the `IF EXISTS` option:
 DROP INDEX CONCURRENTLY IF EXISTS pgvet_idx;
 ```
 
+## Types
+
+### use-timestamp-with-time-zone
+
+Enabled by default: ✓
+
+Timestamp with time zone preserves the time zone information and makes the data easier to reason about.
+
+**Violation**:
+
+```sql
+CREATE TABLE IF NOT EXISTS pgvet (
+  id text PRIMARY KEY,
+  created_at timestamp
+);
+```
+
+**Solution**:
+
+Use `timestamptz`/`timestamp with time zone`
+
+```sql
+CREATE TABLE IF NOT EXISTS pgvet (
+  id text PRIMARY KEY,
+  created_at timestamptz
+);
+```
+
 ## Miscellaneous
 
 ### missing-foreign-key-index
@@ -437,7 +466,6 @@ The referenced column is often used in joins and lookups, and thus can benefit f
 CREATE TABLE IF NOT EXISTS pgvet (
   id text PRIMARY KEY,
   reference text REFERENCES parent(id),
-  other_reference text REFERENCES parent(id)
 );
 -- end of migration
 ```

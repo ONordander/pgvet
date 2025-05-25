@@ -10,6 +10,7 @@ const (
 	idempotency   = "idempotency"
 	locking       = "locking"
 	miscellaneous = "miscellaneous"
+	types         = "types"
 )
 
 type Rule struct {
@@ -28,6 +29,7 @@ func AllRules() []Rule {
 	rules = append(rules, lockingRules...)
 	rules = append(rules, idempotencyRules...)
 	rules = append(rules, miscellaneousRules...)
+	rules = append(rules, typeRules...)
 	return rules
 }
 

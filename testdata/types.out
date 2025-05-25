@@ -1,0 +1,21 @@
+[1;31muse-timestamp-with-time-zone[0m: testdata/types.sql:1
+
+  1 | CREATE TABLE IF NOT EXISTS pgvet (
+  2 |   created_at timestamp
+  3 | )
+
+  [1mViolation[0m: Timestamp with time zone preserves the time zone information and makes the data easier to reason about
+  [1mSolution[0m: Update fields to use `timestamptz`/`timestamp with time zone` instead of `timestamp`/`timestamp without time zone`
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#use-timestamp-with-time-zone
+........................................................................................................................
+
+[1;31muse-timestamp-with-time-zone[0m: testdata/types.sql:5
+
+  5 | ALTER TABLE pgvet ADD COLUMN IF NOT EXISTS updated_at timestamp
+
+  [1mViolation[0m: Timestamp with time zone preserves the time zone information and makes the data easier to reason about
+  [1mSolution[0m: Update fields to use `timestamptz`/`timestamp with time zone` instead of `timestamp`/`timestamp without time zone`
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#use-timestamp-with-time-zone
+........................................................................................................................
+
+[1;31m2 violations found[0m
