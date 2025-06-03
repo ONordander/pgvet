@@ -101,12 +101,12 @@ func lint(
 	format string,
 	exitStatusOnViolations bool,
 ) int {
-	logger := configureLogger(wErr)
+	log := newLogger(wErr)
 
 	switch format {
 	case formatJson, formatText:
 	default:
-		logger.Error(fmt.Sprintf("Unknown format %q", format))
+		log.Error("Unknown format %q", format)
 		return 1
 	}
 
@@ -115,7 +115,7 @@ func lint(
 		var err error
 		cfg, err = overlayConfig(cfg, *configpath)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Failed to parse config: %s", err.Error()))
+			log.Error("Failed to parse config: %s", err.Error())
 			return 1
 		}
 	}
@@ -124,7 +124,7 @@ func lint(
 	for _, pattern := range patterns {
 		patternFiles, err := filepath.Glob(pattern)
 		if err != nil {
-			logger.Error(err.Error())
+			log.Error(err.Error())
 			return 1
 		}
 		for _, f := range patternFiles {
@@ -139,16 +139,16 @@ func lint(
 	}
 
 	if len(fileMap) == 0 {
-		logger.Error(fmt.Sprintf("No files found for patterns: %v", patterns))
+		log.Error("No files found for patterns: %v", patterns)
 		return 1
 	}
-	logger.Info(fmt.Sprintf("Linting %d files...", len(fileMap)))
+	log.Info("Linting %d file(s)...\n\n", len(fileMap))
 
 	var report Report
 	for _, f := range slices.Sorted(maps.Keys(fileMap)) {
 		content, err := os.ReadFile(f)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Failed to read file %s", err.Error()))
+			log.Error("Failed to read file %s", err.Error())
 			return 1
 		}
 
@@ -156,7 +156,7 @@ func lint(
 
 		tree, err := pgquery.Parse(query)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Failed to parse SQL from file %q: %s", f, err.Error()))
+			log.Error("Failed to parse SQL from file %q: %s", f, err.Error())
 			return 1
 		}
 
@@ -167,7 +167,7 @@ func lint(
 			}
 			partial, err := rule.Fn(tree, rule.Code, rule.Slug, rule.Help)
 			if err != nil {
-				logger.Error(fmt.Sprintf("Rule %q failed on file %q: %s", rule.Code, f, err.Error()))
+				log.Error("Rule %q failed on file %q: %s", rule.Code, f, err.Error())
 				return 1
 			}
 			results = append(results, partial...)
@@ -195,7 +195,7 @@ func lint(
 
 	serialized, err := report.Serialize(format)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to seralize report: %s", err.Error()))
+		log.Error("Failed to seralize report: %s", err.Error())
 		return 1
 	}
 
