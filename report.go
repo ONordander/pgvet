@@ -8,6 +8,17 @@ import (
 	"github.com/onordander/pgvet/rules"
 )
 
+const (
+	violationFmt = `%s%s%s: %s:%d
+
+%s
+  %sViolation%s: %s
+  %sSolution%s: %s
+  %sExplanation%s: https://github.com/ONordander/pgvet?tab=readme-ov-file#%s
+%s
+`
+)
+
 type violation struct {
 	File          string     `json:"file"`
 	Code          rules.Code `json:"code"`
@@ -29,35 +40,30 @@ func (r Report) Serialize(format string) (string, error) {
 	}
 
 	var b strings.Builder
-	for _, entry := range r {
-		b.WriteString(entry.formatMsg())
+	files := map[string]bool{}
+	for _, v := range r {
+		b.WriteString(formatViolation(v))
 		b.WriteString("\n")
+		files[v.File] = true
 	}
-	color := red
-	if len(r) == 0 {
-		color = green
+
+	summary := fmt.Sprintf("%s0 violations found %s\n", green, normal)
+	if len(r) > 0 {
+		summary = fmt.Sprintf("%s%d violation(s) found in %d file(s)%s\n", red, len(r), len(files), normal)
 	}
-	b.WriteString(fmt.Sprintf("%s%d violations found%s\n", color, len(r), normal))
+	b.WriteString(summary)
 
 	return b.String(), nil
 }
 
-func (l violation) formatMsg() string {
-	msg := `%s%s%s: %s:%d
-
-%s
-  %sViolation%s: %s
-  %sSolution%s: %s
-  %sExplanation%s: https://github.com/ONordander/pgvet?tab=readme-ov-file#%s
-%s
-`
+func formatViolation(v violation) string {
 	return fmt.Sprintf(
-		msg,
-		red, l.Code, normal, l.File, l.StatementLine,
-		formatStatement(l.Statement, l.StatementLine),
-		bold, normal, l.Slug,
-		bold, normal, l.Help,
-		bold, normal, l.Code,
+		violationFmt,
+		red, v.Code, normal, v.File, v.StatementLine,
+		formatStatement(v.Statement, v.StatementLine),
+		bold, normal, v.Slug,
+		bold, normal, v.Help,
+		bold, normal, v.Code,
 		strings.Repeat(".", 120),
 	)
 }

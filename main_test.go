@@ -46,7 +46,6 @@ func TestLint(t *testing.T) {
 
 			expected := mustReadFile(t, tc.expectedfile)
 			assert.Equal(t, expected, wOut.String())
-			assert.Empty(t, wErr.String())
 		})
 	}
 }
@@ -145,7 +144,6 @@ func TestExitStatusOnViolations(t *testing.T) {
 	var wOut, wErr strings.Builder
 	rc := lint(&wOut, &wErr, []string{"testdata/breaking.sql"}, nil, formatText, true)
 	assert.NotZero(t, rc)
-	assert.Empty(t, wErr.String())
 	assert.NotEmpty(t, wOut.String())
 }
 

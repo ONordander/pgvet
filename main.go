@@ -142,6 +142,7 @@ func lint(
 		logger.Error(fmt.Sprintf("No files found for patterns: %v", patterns))
 		return 1
 	}
+	logger.Info(fmt.Sprintf("Linting %d files...", len(fileMap)))
 
 	var report Report
 	for _, f := range slices.Sorted(maps.Keys(fileMap)) {
