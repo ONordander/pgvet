@@ -122,6 +122,11 @@ func lint(
 
 	fileMap := map[string]struct{}{}
 	for _, pattern := range patterns {
+		fileInfo, err := os.Stat(pattern)
+		// If pattern is a directory be nice and parse all the files
+		if err == nil && fileInfo.IsDir() {
+			pattern = filepath.Join(pattern, "*")
+		}
 		patternFiles, err := filepath.Glob(pattern)
 		if err != nil {
 			log.Error(err.Error())

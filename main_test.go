@@ -53,10 +53,22 @@ func TestLint(t *testing.T) {
 func TestLintPatterns(t *testing.T) {
 	t.Parallel()
 
-	t.Run("Folder", func(t *testing.T) {
+	t.Run("Wildcard", func(t *testing.T) {
 		t.Parallel()
 		var wOut, wErr strings.Builder
 		rc := lint(&wOut, &wErr, []string{"testdata/patterns/*"}, nil, formatText, false)
+		require.Zero(t, rc, wErr.String())
+
+		out := wOut.String()
+		assert.Contains(t, out, "1-pattern.sql")
+		assert.Contains(t, out, "2-pattern.sql")
+		assert.Contains(t, out, "1.sql")
+	})
+
+	t.Run("Folder", func(t *testing.T) {
+		t.Parallel()
+		var wOut, wErr strings.Builder
+		rc := lint(&wOut, &wErr, []string{"testdata/patterns"}, nil, formatText, false)
 		require.Zero(t, rc, wErr.String())
 
 		out := wOut.String()
