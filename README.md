@@ -28,7 +28,7 @@ CGO_ENABLED=0 go install github.com/onordander/pgvet@latest
 ```yaml
 steps:
 - name: pgvet
-  uses: onordander/pgvet@v0.2.0
+  uses: onordander/pgvet@v0.2.1
   with:
     pattern: "./migrations/*.sql"
     config: "./pgvet.yaml"
