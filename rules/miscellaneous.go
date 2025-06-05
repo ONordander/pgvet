@@ -15,6 +15,13 @@ var miscellaneousRules = []Rule{
 		Fn:       missingForeignKeyIndex,
 		Category: miscellaneous,
 	},
+	{
+		Code:     "concurrent-in-tx",
+		Slug:     "Concurrently creating/dropping an index cannot be done inside of a transaction",
+		Help:     "Perform the operation outside of a transaction",
+		Fn:       concurrentInTX,
+		Category: miscellaneous,
+	},
 }
 
 func missingForeignKeyIndex(
@@ -93,6 +100,69 @@ func missingForeignKeyIndex(
 			StmtEnd:   marker.stmtEnd,
 		}
 		results = append(results, r)
+	}
+
+	return results, nil
+}
+
+func concurrentInTX(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
+	var results []Result
+	tracker := newTXTracker(implicitMigration)
+
+	for _, stmt := range tree.Stmts {
+		// Check for new tx or commit
+		if txStmt := stmt.GetStmt().GetTransactionStmt(); txStmt != nil {
+			switch txStmt.GetKind() {
+			case pgquery.TransactionStmtKind_TRANS_STMT_COMMIT:
+				tracker.commitTx()
+			case pgquery.TransactionStmtKind_TRANS_STMT_BEGIN, pgquery.TransactionStmtKind_TRANS_STMT_START:
+				tracker.beginTx()
+			}
+		}
+
+		if !tracker.inTx {
+			continue
+		}
+
+		// Check for index creation
+		if indexStmt := stmt.GetStmt().GetIndexStmt(); indexStmt != nil {
+			if !indexStmt.Concurrent {
+				continue
+			}
+
+			r := Result{
+				Slug:      slug,
+				Help:      help,
+				Code:      code,
+				StmtStart: stmt.GetStmtLocation(),
+				StmtEnd:   stmt.GetStmtLocation() + stmt.GetStmtLen(),
+			}
+			results = append(results, r)
+		}
+
+		// Check for index drop
+		if dropStmt := stmt.GetStmt().GetDropStmt(); dropStmt != nil {
+			if !dropStmt.Concurrent {
+				continue
+			}
+			if dropStmt.GetRemoveType() == pgquery.ObjectType_OBJECT_INDEX {
+				r := Result{
+					Slug:      slug,
+					Help:      help,
+					Code:      code,
+					StmtStart: stmt.GetStmtLocation(),
+					StmtEnd:   stmt.GetStmtLocation() + stmt.GetStmtLen(),
+				}
+				results = append(results, r)
+			}
+		}
+
 	}
 
 	return results, nil

@@ -12,3 +12,8 @@ CREATE TABLE IF NOT EXISTS pgvet_two (
   reference text REFERENCES parent(id),
   other_reference text REFERENCES parent(id)
 );
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS pgvet_idx ON pgvet(value);
+
+-- pgvet_nolint:concurrent-in-tx
+CREATE INDEX CONCURRENTLY IF NOT EXISTS pgvet_idx ON pgvet(value);

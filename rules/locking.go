@@ -112,7 +112,7 @@ func multipleLocks(
 ) ([]Result, error) {
 	var results []Result
 
-	tracker := newTracker()
+	tracker := newTXTracker(implicitMigration)
 
 	for _, stmt := range tree.Stmts {
 		// Check for alter table
@@ -148,10 +148,10 @@ type txTracker struct {
 	inTx         bool
 }
 
-func newTracker() *txTracker {
+func newTXTracker(startInTx bool) *txTracker {
 	tracker := &txTracker{
 		tableChanges: map[string]bool{},
-		inTx:         true, // Assume that we start in a transaction
+		inTx:         startInTx, // Assume that we start in a transaction
 	}
 	return tracker
 }

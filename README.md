@@ -164,6 +164,7 @@ For examples see `./testdata`.
 | [missing-if-exists](#missing-if-exists)                       | idempotency   | ✓                  |
 | [use-timestamp-with-time-zone](#use-timestamp-with-time-zone) | types         | ✓                  |
 | [missing-foreign-key-index](#missing-foreign-key-index)       | miscellaneous | ✓                  |
+| [concurrent-in-tx](#concurrent-in-tx)                         | miscellaneous | ✓                  |
 
 ## Breaking changes
 
@@ -489,6 +490,25 @@ Create an index for the referenced column:
 ```sql
 CREATE INDEX CONCURRENTLY IF NOT EXISTS pgvet_idx ON pgvet(reference);
 ```
+
+### concurrent-in-tx
+
+Enabled by default: ✓
+
+Creating/dropping an index concurrently cannot be done inside a transaction.
+
+**Violation:**
+
+```sql
+BEGIN;
+CREATE INDEX CONCURRENTLY pgvet_idx ON pgvet(value);
+COMMIT;
+-- end of migration
+```
+
+**Solution**:
+
+Perform the operation outside of the transaction.
 
 # Further reading
 

@@ -11,4 +11,22 @@
   [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#missing-foreign-key-index
 ........................................................................................................................
 
-[1;31m1 violation(s) found in 1 file(s)[0m
+[1;31mconcurrent-in-tx[0m: testdata/miscellaneous.sql:7
+
+  7 | CREATE INDEX CONCURRENTLY IF NOT EXISTS ref_fk ON pgvet(reference)
+
+  [1mViolation[0m: Concurrently creating/dropping an index cannot be done inside of a transaction
+  [1mSolution[0m: Perform the operation outside of a transaction
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#concurrent-in-tx
+........................................................................................................................
+
+[1;31mconcurrent-in-tx[0m: testdata/miscellaneous.sql:16
+
+  16 | CREATE INDEX CONCURRENTLY IF NOT EXISTS pgvet_idx ON pgvet(value)
+
+  [1mViolation[0m: Concurrently creating/dropping an index cannot be done inside of a transaction
+  [1mSolution[0m: Perform the operation outside of a transaction
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#concurrent-in-tx
+........................................................................................................................
+
+[1;31m3 violation(s) found in 1 file(s)[0m

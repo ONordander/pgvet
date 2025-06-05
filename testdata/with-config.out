@@ -1,6 +1,6 @@
-[1;31madd-non-null-column[0m: testdata/with-config.sql:3
+[1;31madd-non-null-column[0m: testdata/with-config.sql:5
 
-  3 | ALTER TABLE pgvet ADD COLUMN value text NOT NULL
+  5 | ALTER TABLE pgvet ADD COLUMN value text NOT NULL
 
   [1mViolation[0m: Adding a non-nullable column without a default will fail if the table is populated
   [1mSolution[0m: Make the column nullable or add a default

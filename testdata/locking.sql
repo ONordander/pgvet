@@ -1,4 +1,4 @@
-BEGIN;
+COMMIT; -- Exit implicit transaction
 
 --
 -- rule: non-concurrent-index
@@ -17,8 +17,6 @@ DROP INDEX IF EXISTS pgvet_idx;
 
 DROP INDEX CONCURRENTLY IF EXISTS pgvet_idx;
 
-COMMIT;
-
 --
 -- rule: constraint-excessive-lock
 --
@@ -32,10 +30,11 @@ ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES
 
 ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;
 
+COMMIT;
+
 -- Add index to not violate missing-foreign-key-index
 CREATE INDEX CONCURRENTLY ON pgvet(reference);
 
-COMMIT;
 
 --
 -- rule: multiple-locks

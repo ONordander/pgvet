@@ -156,7 +156,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 4)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, false)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -179,7 +179,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 5)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, false)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -215,7 +215,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 6)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, false)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -232,7 +232,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 5)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, false)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -250,7 +250,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 6)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, false)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})

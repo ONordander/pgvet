@@ -1,5 +1,7 @@
-[1;31mnon-concurrent-index[0m: testdata/locking.sql:3
+[1;31mnon-concurrent-index[0m: testdata/locking.sql:1
 
+  1 | -- Exit implicit transaction
+  2 | 
   3 | --
   4 | -- rule: non-concurrent-index
   5 | --
@@ -19,18 +21,18 @@
   [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#non-concurrent-index
 ........................................................................................................................
 
-[1;31mconstraint-excessive-lock[0m: testdata/locking.sql:28
+[1;31mconstraint-excessive-lock[0m: testdata/locking.sql:26
 
-  28 | ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id)
+  26 | ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id)
 
   [1mViolation[0m: Adding a constraint acquires a lock blocking any writes during the constraint validation
   [1mSolution[0m: Append the `NOT VALID` option and then in a following transaction perform `ALTER TABLE VALIDATE CONSTRAINT ...`
   [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#constraint-excessive-lock
 ........................................................................................................................
 
-[1;31mmultiple-locks[0m: testdata/locking.sql:46
+[1;31mmultiple-locks[0m: testdata/locking.sql:45
 
-  46 | ALTER TABLE secondtable ADD COLUMN IF NOT EXISTS value text
+  45 | ALTER TABLE secondtable ADD COLUMN IF NOT EXISTS value text
 
   [1mViolation[0m: Experimental: acquiring multiple locks in a single transaction can cause a deadlock.
   [1mSolution[0m: Perform the changes in separate transactions
