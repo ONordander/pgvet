@@ -21,7 +21,13 @@ var nullabilityRules = []Rule{
 	},
 }
 
-func addNonNullColumn(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func addNonNullColumn(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts) {
 		for _, cmd := range decl.Stmt.AlterTableStmt.GetCmds() {
@@ -61,7 +67,13 @@ func addNonNullColumn(tree *pgquery.ParseResult, code Code, slug, help string) (
 	return results, nil
 }
 
-func alterColumnNotNullable(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func alterColumnNotNullable(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {
 		for _, cmd := range stmt.Stmt.GetAlterTableStmt().GetCmds() {

@@ -132,6 +132,19 @@ add-non-null-column: migration.sql:1
 ........................................................................................................................
 ```
 
+## Transaction behavior
+
+By default the linter assumes that an implicit transaction wraps the migration.
+E.g.
+
+```sql
+CREATE INDEX CONCURRENTLY pgvet_idx ON pgvet(value);
+```
+
+Would be flagged as a violation since `CONCURRENTLY` cannot be used inside a transaction.
+
+To disable the implicit transaction behavior set `implicitTransaction: false` in the config file.
+
 # Rules
 
 For examples see `./testdata`.
@@ -340,8 +353,7 @@ ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES
 
 Enabled by default: 🗙
 
-Experimental: acquiring multiple locks in a single transaction can cause a deadlock if an application contends with the locks in a different order.\
-Note: this rule assumes that the migrations runs in an implicit transaction.
+Experimental: acquiring multiple locks in a single transaction can cause a deadlock if an application contends with the locks in a different order.
 
 **Violation:**
 

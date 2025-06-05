@@ -17,7 +17,13 @@ var miscellaneousRules = []Rule{
 	},
 }
 
-func missingForeignKeyIndex(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func missingForeignKeyIndex(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	type stmtMarker struct {
 		stmtStart int32
 		stmtEnd   int32

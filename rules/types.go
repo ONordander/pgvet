@@ -14,7 +14,13 @@ var typeRules = []Rule{
 	},
 }
 
-func useTimestampWithTimeZone(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func useTimestampWithTimeZone(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {
 		// Check for table creation

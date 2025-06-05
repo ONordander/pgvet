@@ -21,7 +21,13 @@ var idempotencyRules = []Rule{
 	},
 }
 
-func missingIfNotExists(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func missingIfNotExists(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {
 		// Check relation creations
@@ -75,7 +81,13 @@ func missingIfNotExists(tree *pgquery.ParseResult, code Code, slug, help string)
 	return results, nil
 }
 
-func missingIfExists(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func missingIfExists(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {
 		// Check drop relations, e.g. DROP TABLE, DROP INDEX

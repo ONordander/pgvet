@@ -13,7 +13,9 @@ type ruleConfig struct {
 }
 
 type Config struct {
-	Rules map[rules.Code]ruleConfig `yaml:"rules"`
+	// If true the linter will treat the migration as running inside a transaction by default.
+	ImplicitTransaction *bool                     `yaml:"implicitTransaction"`
+	Rules               map[rules.Code]ruleConfig `yaml:"rules"`
 }
 
 func defaultConfig() Config {
@@ -23,8 +25,10 @@ func defaultConfig() Config {
 		ruleConfigs[rule.Code] = ruleConfig{Enabled: enabled}
 	}
 
+	implicitTx := true
 	return Config{
-		Rules: ruleConfigs,
+		ImplicitTransaction: &implicitTx,
+		Rules:               ruleConfigs,
 	}
 }
 
@@ -41,6 +45,10 @@ func overlayConfig(cfg Config, path string) (Config, error) {
 
 	for code, ruleConfig := range parsed.Rules {
 		cfg.Rules[code] = ruleConfig
+	}
+
+	if parsed.ImplicitTransaction != nil {
+		cfg.ImplicitTransaction = parsed.ImplicitTransaction
 	}
 
 	return cfg, nil

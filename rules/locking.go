@@ -21,7 +21,7 @@ var lockingRules = []Rule{
 	},
 	{
 		Code:              "multiple-locks",
-		Slug:              "Experimental: acquiring multiple locks in a single transaction can cause a deadlock. Note: this rule assumes that the migration runs in an implicit transaction.",
+		Slug:              "Experimental: acquiring multiple locks in a single transaction can cause a deadlock.",
 		Help:              "Perform the changes in separate transactions",
 		Fn:                multipleLocks,
 		Category:          locking,
@@ -29,7 +29,13 @@ var lockingRules = []Rule{
 	},
 }
 
-func nonConcurrentIndex(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func nonConcurrentIndex(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {
 		// Check for index creation
@@ -66,7 +72,13 @@ func nonConcurrentIndex(tree *pgquery.ParseResult, code Code, slug, help string)
 	return results, nil
 }
 
-func constraintExcessiveLock(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func constraintExcessiveLock(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts) {
 		for _, cmd := range decl.Stmt.AlterTableStmt.GetCmds() {
@@ -91,7 +103,13 @@ func constraintExcessiveLock(tree *pgquery.ParseResult, code Code, slug, help st
 	return results, nil
 }
 
-func multipleLocks(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func multipleLocks(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 
 	tracker := newTracker()

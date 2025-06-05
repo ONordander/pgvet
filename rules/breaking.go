@@ -35,7 +35,13 @@ var breakingRules = []Rule{
 	},
 }
 
-func dropColumn(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func dropColumn(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts) {
 		for _, cmd := range decl.Stmt.AlterTableStmt.GetCmds() {
@@ -57,7 +63,13 @@ func dropColumn(tree *pgquery.ParseResult, code Code, slug, help string) ([]Resu
 	return results, nil
 }
 
-func renameColumn(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func renameColumn(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_RenameStmt](tree.Stmts) {
 		if decl.Stmt.RenameStmt.RenameType != pgquery.ObjectType_OBJECT_COLUMN {
@@ -75,7 +87,13 @@ func renameColumn(tree *pgquery.ParseResult, code Code, slug, help string) ([]Re
 	return results, nil
 }
 
-func dropTable(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func dropTable(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_DropStmt](tree.Stmts) {
 		if decl.Stmt.DropStmt.RemoveType == pgquery.ObjectType_OBJECT_TABLE {
@@ -93,7 +111,13 @@ func dropTable(tree *pgquery.ParseResult, code Code, slug, help string) ([]Resul
 	return results, nil
 }
 
-func changeColumnType(tree *pgquery.ParseResult, code Code, slug, help string) ([]Result, error) {
+func changeColumnType(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	implicitMigration bool,
+) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts) {
 		for _, cmd := range decl.Stmt.AlterTableStmt.GetCmds() {

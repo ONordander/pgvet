@@ -17,7 +17,7 @@ func TestMissingIfNotExists(t *testing.T) {
 		tree := mustParse(t, "CREATE TABLE pgvet (id integer PRIMARY KEY);")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -34,7 +34,7 @@ func TestMissingIfNotExists(t *testing.T) {
 		tree := mustParse(t, "CREATE INDEX pgvet_key ON pgvet(id);")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -51,7 +51,7 @@ func TestMissingIfNotExists(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ADD COLUMN value text;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -72,7 +72,7 @@ func TestMissingIfNotExists(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 3)
 
@@ -91,7 +91,7 @@ func TestMissingIfNotExists(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -105,7 +105,7 @@ func TestMissingIfNotExists(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 2)
 
-		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfNotExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -120,7 +120,7 @@ func TestMissingIfExists(t *testing.T) {
 		tree := mustParse(t, "DROP TABLE pgvet;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := missingIfExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -137,7 +137,7 @@ func TestMissingIfExists(t *testing.T) {
 		tree := mustParse(t, "DROP INDEX pgvet_idx;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := missingIfExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -154,7 +154,7 @@ func TestMissingIfExists(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet DROP COLUMN name;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := missingIfExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -175,7 +175,7 @@ func TestMissingIfExists(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := missingIfExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -193,7 +193,7 @@ func TestMissingIfExists(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := missingIfExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -207,7 +207,7 @@ func TestMissingIfExists(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 2)
 
-		res, err := missingIfExists(tree, testCode, testSlug, testHelp)
+		res, err := missingIfExists(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})

@@ -23,7 +23,7 @@ func TestDropColumn(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet DROP COLUMN value;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := dropColumn(tree, testCode, testSlug, testHelp)
+		res, err := dropColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -44,7 +44,7 @@ func TestDropColumn(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := dropColumn(tree, testCode, testSlug, testHelp)
+		res, err := dropColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -62,7 +62,7 @@ func TestDropColumn(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := dropColumn(tree, testCode, testSlug, testHelp)
+		res, err := dropColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -77,7 +77,7 @@ func TestDropTable(t *testing.T) {
 		tree := mustParse(t, "DROP TABLE pgvet;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := dropTable(tree, testCode, testSlug, testHelp)
+		res, err := dropTable(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -98,7 +98,7 @@ func TestDropTable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := dropTable(tree, testCode, testSlug, testHelp)
+		res, err := dropTable(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -116,7 +116,7 @@ func TestRenameColumn(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet RENAME COLUMN value TO value2;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := renameColumn(tree, testCode, testSlug, testHelp)
+		res, err := renameColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -137,7 +137,7 @@ func TestRenameColumn(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := renameColumn(tree, testCode, testSlug, testHelp)
+		res, err := renameColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -155,7 +155,7 @@ func TestChangeColumnType(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ALTER COLUMN value TYPE text;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := changeColumnType(tree, testCode, testSlug, testHelp)
+		res, err := changeColumnType(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -176,7 +176,7 @@ func TestChangeColumnType(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := changeColumnType(tree, testCode, testSlug, testHelp)
+		res, err := changeColumnType(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 

@@ -17,7 +17,7 @@ func TestAddNonNullColumn(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ADD COLUMN value text NOT NULL;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp)
+		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -38,7 +38,7 @@ func TestAddNonNullColumn(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp)
+		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -52,7 +52,7 @@ func TestAddNonNullColumn(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ADD COLUMN value text NOT NULL DEFAULT '1';")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp)
+		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -63,7 +63,7 @@ func TestAddNonNullColumn(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ADD COLUMN value text;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp)
+		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -79,7 +79,7 @@ func TestAddNonNullColumn(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 4)
 
-		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp)
+		res, err := addNonNullColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -94,7 +94,7 @@ func TestAlterColumnNotNullable(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ALTER COLUMN value SET NOT NULL;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := alterColumnNotNullable(tree, testCode, testSlug, testHelp)
+		res, err := alterColumnNotNullable(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -115,7 +115,7 @@ func TestAlterColumnNotNullable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := alterColumnNotNullable(tree, testCode, testSlug, testHelp)
+		res, err := alterColumnNotNullable(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -129,7 +129,7 @@ func TestAlterColumnNotNullable(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ALTER COLUMN value DROP NOT NULL;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := alterColumnNotNullable(tree, testCode, testSlug, testHelp)
+		res, err := alterColumnNotNullable(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -144,7 +144,7 @@ func TestAlterColumnNotNullable(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := alterColumnNotNullable(tree, testCode, testSlug, testHelp)
+		res, err := alterColumnNotNullable(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})

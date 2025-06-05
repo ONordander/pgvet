@@ -17,7 +17,7 @@ func TestNonConcurrentIndex(t *testing.T) {
 		tree := mustParse(t, "CREATE INDEX ON pgvet (id);")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp)
+		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -34,7 +34,7 @@ func TestNonConcurrentIndex(t *testing.T) {
 		tree := mustParse(t, "DROP INDEX pgvet_idx;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp)
+		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -56,7 +56,7 @@ func TestNonConcurrentIndex(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 4)
 
-		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp)
+		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -75,7 +75,7 @@ func TestNonConcurrentIndex(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 4)
 
-		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp)
+		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -86,7 +86,7 @@ func TestNonConcurrentIndex(t *testing.T) {
 		tree := mustParse(t, "CREATE INDEX CONCURRENTLY ON pgvet (id);")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp)
+		res, err := nonConcurrentIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -101,7 +101,7 @@ func TestConstraintKeyExcessiveLock(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id);")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp)
+		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -122,7 +122,7 @@ func TestConstraintKeyExcessiveLock(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp)
+		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -136,7 +136,7 @@ func TestConstraintKeyExcessiveLock(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES issues(id) NOT VALID;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp)
+		res, err := constraintExcessiveLock(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -156,7 +156,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 4)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -179,7 +179,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 5)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -197,7 +197,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Len(t, res, 1)
 	})
@@ -215,7 +215,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 6)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -232,7 +232,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 5)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
@@ -250,7 +250,7 @@ func TestMultipleLocks(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 6)
 
-		res, err := multipleLocks(tree, testCode, testSlug, testHelp)
+		res, err := multipleLocks(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})

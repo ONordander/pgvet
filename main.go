@@ -170,7 +170,7 @@ func lint(
 			if cfg, ok := cfg.Rules[rule.Code]; !ok || !cfg.Enabled {
 				continue
 			}
-			partial, err := rule.Fn(tree, rule.Code, rule.Slug, rule.Help)
+			partial, err := rule.Fn(tree, rule.Code, rule.Slug, rule.Help, *cfg.ImplicitTransaction)
 			if err != nil {
 				log.Error("Rule %q failed on file %q: %s", rule.Code, f, err.Error())
 				return 1

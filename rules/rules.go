@@ -17,7 +17,7 @@ type Rule struct {
 	Code              Code
 	Slug              string
 	Help              string
-	Fn                func(*pgquery.ParseResult, Code, string, string) ([]Result, error)
+	Fn                func(*pgquery.ParseResult, Code, string, string, bool) ([]Result, error)
 	Category          string
 	DisabledByDefault bool
 }

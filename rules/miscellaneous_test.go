@@ -17,7 +17,7 @@ func TestMissingForeignKeyIndex(t *testing.T) {
 		tree := mustParse(t, "CREATE TABLE pgvet (reference text REFERENCES parent(id));")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := missingForeignKeyIndex(tree, testCode, testSlug, testHelp)
+		res, err := missingForeignKeyIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -34,7 +34,7 @@ func TestMissingForeignKeyIndex(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ADD CONSTRAINT reference_fk FOREIGN KEY (reference) REFERENCES parent(id);")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := missingForeignKeyIndex(tree, testCode, testSlug, testHelp)
+		res, err := missingForeignKeyIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 	})
@@ -49,7 +49,7 @@ func TestMissingForeignKeyIndex(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := missingForeignKeyIndex(tree, testCode, testSlug, testHelp)
+		res, err := missingForeignKeyIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -66,7 +66,7 @@ func TestMissingForeignKeyIndex(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 2)
 
-		res, err := missingForeignKeyIndex(tree, testCode, testSlug, testHelp)
+		res, err := missingForeignKeyIndex(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})

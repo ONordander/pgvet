@@ -17,7 +17,7 @@ func TestUseTimestampWithTimeZone(t *testing.T) {
 		tree := mustParse(t, "CREATE TABLE pgvet (created_at timestamp);")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := useTimestampWithTimeZone(tree, testCode, testSlug, testHelp)
+		res, err := useTimestampWithTimeZone(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -34,7 +34,7 @@ func TestUseTimestampWithTimeZone(t *testing.T) {
 		tree := mustParse(t, "ALTER TABLE pgvet ADD COLUMN created_at timestamp;")
 		require.Len(t, tree.Stmts, 1)
 
-		res, err := useTimestampWithTimeZone(tree, testCode, testSlug, testHelp)
+		res, err := useTimestampWithTimeZone(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 1)
 
@@ -55,7 +55,7 @@ func TestUseTimestampWithTimeZone(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 3)
 
-		res, err := useTimestampWithTimeZone(tree, testCode, testSlug, testHelp)
+		res, err := useTimestampWithTimeZone(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		require.Len(t, res, 2)
 
@@ -72,7 +72,7 @@ func TestUseTimestampWithTimeZone(t *testing.T) {
 		tree := mustParse(t, b.String())
 		require.Len(t, tree.Stmts, 2)
 
-		res, err := dropColumn(tree, testCode, testSlug, testHelp)
+		res, err := dropColumn(tree, testCode, testSlug, testHelp, true)
 		require.NoError(t, err)
 		assert.Empty(t, res)
 	})
