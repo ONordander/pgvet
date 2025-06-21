@@ -26,7 +26,7 @@ func addNonNullColumn(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts) {
@@ -72,7 +72,7 @@ func alterColumnNotNullable(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {

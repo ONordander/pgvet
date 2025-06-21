@@ -29,7 +29,7 @@ func missingForeignKeyIndex(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	type stmtMarker struct {
 		stmtStart int32
@@ -110,10 +110,10 @@ func concurrentInTX(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
-	tracker := newTXTracker(implicitMigration)
+	tracker := newTXTracker(implicitTransaction)
 
 	for _, stmt := range tree.Stmts {
 		// Check for new tx or commit

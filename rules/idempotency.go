@@ -26,7 +26,7 @@ func missingIfNotExists(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {
@@ -86,7 +86,7 @@ func missingIfExists(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {

@@ -19,7 +19,7 @@ func useTimestampWithTimeZone(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {

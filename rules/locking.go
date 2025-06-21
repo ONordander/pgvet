@@ -34,7 +34,7 @@ func nonConcurrentIndex(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, stmt := range tree.Stmts {
@@ -77,7 +77,7 @@ func constraintExcessiveLock(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts) {
@@ -108,11 +108,11 @@ func multipleLocks(
 	code Code,
 	slug,
 	help string,
-	implicitMigration bool,
+	implicitTransaction bool,
 ) ([]Result, error) {
 	var results []Result
 
-	tracker := newTXTracker(implicitMigration)
+	tracker := newTXTracker(implicitTransaction)
 
 	for _, stmt := range tree.Stmts {
 		// Check for alter table
