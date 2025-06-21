@@ -25,13 +25,22 @@
   [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#drop-table
 ........................................................................................................................
 
-[1;31mchange-column-type[0m: testdata/breaking.sql:16
+[1;31mrename-table[0m: testdata/breaking.sql:16
 
-  16 | ALTER TABLE pgvet ALTER COLUMN value TYPE text
+  16 | ALTER TABLE pgvet RENAME TO pgvet_new
+
+  [1mViolation[0m: Renaming a table is not backwards compatible and may break existing clients
+  [1mSolution[0m: Add a new table and write to both from the application. Perform a backfill. Update application code to only use the new table. Delete the old table
+  [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#rename-table
+........................................................................................................................
+
+[1;31mchange-column-type[0m: testdata/breaking.sql:21
+
+  21 | ALTER TABLE pgvet ALTER COLUMN value TYPE text
 
   [1mViolation[0m: Changing the type of a column is not backwards compatible and may break existing clients
   [1mSolution[0m: Add a new column with the new type and write to both from the application. Perform a backfill. Update application code to only use the new column. Delete the old column
   [1mExplanation[0m: https://github.com/ONordander/pgvet?tab=readme-ov-file#change-column-type
 ........................................................................................................................
 
-[1;31m4 violation(s) found in 1 file(s)[0m
+[1;31m5 violation(s) found in 1 file(s)[0m

@@ -27,6 +27,13 @@ var breakingRules = []Rule{
 		Category: breaking,
 	},
 	{
+		Code:     "rename-table",
+		Slug:     "Renaming a table is not backwards compatible and may break existing clients",
+		Help:     "Add a new table and write to both from the application. Perform a backfill. Update application code to only use the new table. Delete the old table",
+		Fn:       renameTable,
+		Category: breaking,
+	},
+	{
 		Code:     "change-column-type",
 		Slug:     "Changing the type of a column is not backwards compatible and may break existing clients",
 		Help:     "Add a new column with the new type and write to both from the application. Perform a backfill. Update application code to only use the new column. Delete the old column",
@@ -40,7 +47,7 @@ func dropColumn(
 	code Code,
 	slug,
 	help string,
-	implicitTransaction bool,
+	_ bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts) {
@@ -63,36 +70,12 @@ func dropColumn(
 	return results, nil
 }
 
-func renameColumn(
-	tree *pgquery.ParseResult,
-	code Code,
-	slug,
-	help string,
-	implicitTransaction bool,
-) ([]Result, error) {
-	var results []Result
-	for _, decl := range FilterStatements[*pgquery.Node_RenameStmt](tree.Stmts) {
-		if decl.Stmt.RenameStmt.RenameType != pgquery.ObjectType_OBJECT_COLUMN {
-			continue
-		}
-		r := Result{
-			Slug:      slug,
-			Help:      help,
-			Code:      code,
-			StmtStart: decl.Start,
-			StmtEnd:   decl.End,
-		}
-		results = append(results, r)
-	}
-	return results, nil
-}
-
 func dropTable(
 	tree *pgquery.ParseResult,
 	code Code,
 	slug,
 	help string,
-	implicitTransaction bool,
+	_ bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_DropStmt](tree.Stmts) {
@@ -111,12 +94,60 @@ func dropTable(
 	return results, nil
 }
 
+func renameColumn(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	_ bool,
+) ([]Result, error) {
+	var results []Result
+	for _, decl := range FilterStatements[*pgquery.Node_RenameStmt](tree.Stmts) {
+		if decl.Stmt.RenameStmt.RenameType != pgquery.ObjectType_OBJECT_COLUMN {
+			continue
+		}
+		r := Result{
+			Slug:      slug,
+			Help:      help,
+			Code:      code,
+			StmtStart: decl.Start,
+			StmtEnd:   decl.End,
+		}
+		results = append(results, r)
+	}
+	return results, nil
+}
+
+func renameTable(
+	tree *pgquery.ParseResult,
+	code Code,
+	slug,
+	help string,
+	_ bool,
+) ([]Result, error) {
+	var results []Result
+	for _, decl := range FilterStatements[*pgquery.Node_RenameStmt](tree.Stmts) {
+		if decl.Stmt.RenameStmt.RenameType != pgquery.ObjectType_OBJECT_TABLE {
+			continue
+		}
+		r := Result{
+			Slug:      slug,
+			Help:      help,
+			Code:      code,
+			StmtStart: decl.Start,
+			StmtEnd:   decl.End,
+		}
+		results = append(results, r)
+	}
+	return results, nil
+}
+
 func changeColumnType(
 	tree *pgquery.ParseResult,
 	code Code,
 	slug,
 	help string,
-	implicitTransaction bool,
+	_ bool,
 ) ([]Result, error) {
 	var results []Result
 	for _, decl := range FilterStatements[*pgquery.Node_AlterTableStmt](tree.Stmts) {

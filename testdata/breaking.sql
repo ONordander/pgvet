@@ -13,6 +13,11 @@ DROP TABLE IF EXISTS pgvet;
 -- pgvet_nolint:drop-table
 DROP TABLE IF EXISTS pgvet;
 
+ALTER TABLE pgvet RENAME TO pgvet_new;
+
+-- pgvet_nolint:rename-table
+ALTER TABLE pgvet RENAME TO pgvet_new;
+
 ALTER TABLE pgvet ALTER COLUMN value TYPE text;
 
 -- pgvet_nolint:change-column-type

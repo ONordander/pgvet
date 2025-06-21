@@ -154,6 +154,7 @@ For examples see `./testdata`.
 | [drop-column](#drop-column)                                   | breaking      | ✓                  |
 | [drop-table](#drop-table)                                     | breaking      | ✓                  |
 | [rename-column](#rename-column)                               | breaking      | ✓                  |
+| [rename-table](#rename-table)                                 | breaking      | ✓                  |
 | [change-column-type](#change-column-type)                     | breaking      | ✓                  |
 | [add-non-null-column](#add-non-null-column)                   | nullability   | ✓                  |
 | [set-non-null-column](#set-non-null-column)                   | nullability   | ✓                  |
@@ -225,6 +226,28 @@ ALTER TABLE pgvet RENAME name TO reference;
 1. Copy the data from the old column to the new column
 1. Update the application to only use the new column
 1. Drop the old column
+
+***
+
+### rename-table
+
+Enabled by default: ✓
+
+Renaming a table is not backwards compatible and may break existing clients that depend on the old table name.
+
+**Violation:**
+
+```sql
+ALTER TABLE pgvet RENAME TO pgvet_new;
+```
+
+**Solution**:
+
+1. Create a new table with the new name
+1. Update the application to write to both tables
+1. Perform a backfill by copying the data from the old table to the new one
+1. Update the application to only use the new table
+1. Drop the old table
 
 ***
 
