@@ -40,6 +40,7 @@ func main() {
 		fmt.Fprint(wErr, "Usage:\n")
 		fmt.Fprint(wErr, "\t./pgvet lint [--config <config.yaml>] <filepattern>...\n")
 		fmt.Fprint(wErr, "\t./pgvet --help\n")
+		fmt.Fprint(wErr, "\t./pgvet rules\n")
 		fmt.Fprint(wErr, "\t./pgvet version\n")
 		fmt.Fprint(wErr, "\t./pgvet license\n")
 		flagSet.PrintDefaults()
